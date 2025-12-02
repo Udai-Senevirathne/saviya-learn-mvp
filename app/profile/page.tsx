@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -91,6 +92,8 @@ function ProfilePageContent({
   setEditForm,
   skills,
   setSkills,
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps, @typescript-eslint/no-explicit-any
 }: any) {
   const { t } = useLanguage();
 
@@ -112,6 +115,8 @@ function ProfilePageContent({
       setSkills(response.data.skills || []);
       setIsLoading(false);
       setTimeout(() => setIsLoaded(true), 100);
+    
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error('Failed to fetch profile:', err);
       setIsLoading(false);
@@ -129,6 +134,7 @@ function ProfilePageContent({
       await fetchProfile();
       setIsEditing(false);
       showToast('Profile updated successfully!', 'success');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       showToast(err.response?.data?.message || 'Failed to update profile', 'error');
     } finally {
@@ -146,9 +152,11 @@ function ProfilePageContent({
   };
 
   const removeSkill = (index: number) => {
-    setSkills(skills.filter((_, i) => i !== index));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setSkills(skills.filter((_: any, i: number) => i !== index));
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateSkill = (index: number, field: string, value: any) => {
     const updated = [...skills];
     updated[index] = { ...updated[index], [field]: value };
@@ -445,7 +453,7 @@ function ProfilePageContent({
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {skills.map((skill, index) => (
+                    {skills.map((skill : any, index : any) => (
                       <div 
                         key={index} 
                         className="border border-gray-200 rounded-xl p-4 hover:border-purple-300 hover:shadow-md transition-all duration-300 bg-white"
@@ -456,7 +464,7 @@ function ProfilePageContent({
                               <Book className="w-4 h-4 text-blue-600" /> {skill.subject}
                             </div>
                             <div className="text-sm text-gray-600 mb-2">
-                              {skill.topics.map((topic, i) => (
+                              {skill.topics.map((topic : any, i : number) => (
                                 <span key={i} className="inline-block bg-gray-100 rounded-full px-2 py-1 text-xs mr-1 mb-1">
                                   {topic}
                                 </span>

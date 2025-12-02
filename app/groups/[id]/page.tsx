@@ -406,51 +406,50 @@ export default function GroupDetailsPage() {
 
   return (
     <LanguageProvider>
-      <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50">
-        {/* Shared Navigation */}
-        <Navigation user={user} />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      <Navigation user={user} />
 
-        <main className="max-w-7xl mx-auto px-4 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Group Header */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-          <div className="flex items-start justify-between">
+        <div className="bg-white rounded-2xl shadow-xl p-5 sm:p-8 mb-6">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
             <div className="flex-1">
-              <div className="flex items-center gap-3 mb-3">
-                <span className="px-3 py-1 bg-blue-100 text-blue-700 text-sm font-semibold rounded-full">
-                  Grade {group.grade}
+              <div className="flex flex-wrap items-center gap-2 mb-4">
+                <span className="px-4 py-1.5 bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 text-sm font-bold rounded-full border border-blue-200">
+                  📚 Grade {group.grade}
                 </span>
                 {group.groupType === 'private' && (
-                  <span className="px-3 py-1 bg-purple-100 text-purple-700 text-sm font-semibold rounded-full">
+                  <span className="px-4 py-1.5 bg-gradient-to-r from-purple-100 to-purple-50 text-purple-700 text-sm font-bold rounded-full border border-purple-200">
                     🔒 Private
                   </span>
                 )}
                 {isMember && (
-                  <span className="px-3 py-1 bg-green-100 text-green-700 text-sm font-semibold rounded-full">
+                  <span className="px-4 py-1.5 bg-gradient-to-r from-green-100 to-green-50 text-green-700 text-sm font-bold rounded-full border border-green-200">
                     {userRole === 'owner' ? '👑 Owner' : userRole === 'admin' ? '⭐ Admin' : '✓ Member'}
                   </span>
                 )}
               </div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">{group.subject}</h1>
-              <p className="text-xl text-gray-600 mb-3">{group.topic}</p>
+              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">{group.subject}</h1>
+              <p className="text-xl sm:text-2xl text-gray-600 mb-4">{group.topic}</p>
               {group.description && (
-                <p className="text-gray-700 mb-4">{group.description}</p>
+                <p className="text-gray-700 mb-4 text-base">{group.description}</p>
               )}
-              <div className="flex items-center gap-6 text-sm text-gray-600">
+              <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm text-gray-600">
                 <div className="flex items-center gap-2">
-                  <span>👥</span>
-                  <span>{memberCount}/{group.maxMembers} members</span>
+                  <span className="text-lg">👥</span>
+                  <span className="font-medium">{memberCount}/{group.maxMembers} members</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span>👤</span>
+                <div className="hidden sm:flex items-center gap-2">
+                  <span className="text-lg">👤</span>
                   <span>Created by {group.createdBy.profile?.name || group.createdBy.email}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span>📅</span>
+                <div className="hidden sm:flex items-center gap-2">
+                  <span className="text-lg">📅</span>
                   <span>{new Date(group.createdAt).toLocaleDateString()}</span>
                 </div>
               </div>
             </div>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 w-full lg:w-auto">
               {canEditGroup() && (
                 <button
                   onClick={() => setShowEditModal(true)}
@@ -484,16 +483,16 @@ export default function GroupDetailsPage() {
                       href={group.whatsappLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium text-center"
+                      className="w-full lg:w-auto px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all shadow-lg hover:shadow-xl hover:scale-105 font-medium text-center"
                     >
-                      WhatsApp Group
+                      💬 WhatsApp Group
                     </a>
                   )}
                   <button
                     onClick={handleLeaveGroup}
-                    className="px-6 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition font-medium"
+                    className="w-full lg:w-auto px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl hover:from-red-700 hover:to-red-800 transition-all shadow-lg hover:shadow-xl font-medium"
                   >
-                    Leave Group
+                    🚪 Leave Group
                   </button>
                 </>
               ) : (
@@ -501,13 +500,13 @@ export default function GroupDetailsPage() {
                 <button
                   onClick={handleJoinGroup}
                   disabled={memberCount >= group.maxMembers}
-                  className={`px-6 py-2 rounded-lg transition font-medium ${
+                  className={`w-full lg:w-auto px-8 py-3 rounded-xl transition-all font-bold shadow-lg ${
                     memberCount >= group.maxMembers
-                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                      : 'bg-blue-600 text-white hover:bg-blue-700'
+                      ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 hover:shadow-xl hover:scale-105'
                   }`}
                 >
-                  {memberCount >= group.maxMembers ? 'Group Full' : 'Join Group'}
+                  {memberCount >= group.maxMembers ? '❌ Group Full' : '➕ Join Group'}
                 </button>
               )}
             </div>
@@ -515,8 +514,8 @@ export default function GroupDetailsPage() {
         </div>
 
         {/* Tabs */}
-        <div className="bg-white rounded-xl shadow-lg mb-6">
-          <div className="flex border-b overflow-x-auto">
+        <div className="bg-white rounded-2xl shadow-xl mb-6">
+          <div className="flex border-b overflow-x-auto scrollbar-hide gap-1 p-2">
             {isMember && (
               <>
                 <TabButton
@@ -603,7 +602,7 @@ export default function GroupDetailsPage() {
           />
         )}
       </main>
-      </div>
+    </div>
     </LanguageProvider>
   );
 }
@@ -613,14 +612,16 @@ function TabButton({ active, onClick, icon, label }: any) {
   return (
     <button
       onClick={onClick}
-      className={`px-6 py-4 font-medium transition whitespace-nowrap ${
+      className={`flex-shrink-0 px-4 sm:px-6 py-3 sm:py-4 font-medium transition-all whitespace-nowrap rounded-lg ${
         active
-          ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
-          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+          ? 'text-blue-600 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-500 shadow-md scale-105'
+          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
       }`}
     >
-      <span className="mr-2">{icon}</span>
-      {label}
+      <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
+        <span className="text-xl sm:text-base">{icon}</span>
+        <span className="text-xs sm:text-base">{label}</span>
+      </div>
     </button>
   );
 }
@@ -747,12 +748,12 @@ function ChatTab({ messages, newMessage, setNewMessage, onSendMessage, isSending
     .map(([_, userName]) => userName as string);
 
   return (
-    <div className="flex flex-col h-[500px]">
-      <div className="flex-1 overflow-y-auto mb-4 space-y-3 px-2">
+    <div className="flex flex-col h-[calc(100vh-400px)] sm:h-[500px] min-h-[400px] max-h-[600px]">
+      <div className="flex-1 overflow-y-auto mb-4 space-y-3 px-1 sm:px-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
         {messages.length === 0 ? (
           <div className="text-center py-12 text-gray-500">
-            <div className="text-5xl mb-3">💬</div>
-            <p>No messages yet. Start the conversation!</p>
+            <div className="text-4xl sm:text-5xl mb-3">💬</div>
+            <p className="text-sm sm:text-base">No messages yet. Start the conversation!</p>
           </div>
         ) : (
           messages.map((msg: ChatMessage) => {
@@ -863,14 +864,14 @@ function ChatTab({ messages, newMessage, setNewMessage, onSendMessage, isSending
         </div>
       )}
 
-      <form onSubmit={onSendMessage} className="flex gap-2">
+      <form onSubmit={onSendMessage} className="flex gap-2 items-end sticky bottom-0 bg-white p-3 rounded-xl shadow-lg">
         <button
           type="button"
           onClick={onAttachResource}
-          className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
+          className="p-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 rounded-xl hover:from-gray-200 hover:to-gray-300 transition-all shadow-md hover:shadow-lg active:scale-95"
           title="Attach Resource"
         >
-          📎
+          <span className="text-xl">📎</span>
         </button>
         <input
           type="text"
@@ -880,15 +881,16 @@ function ChatTab({ messages, newMessage, setNewMessage, onSendMessage, isSending
             if (onTyping) onTyping();
           }}
           placeholder="Type a message..."
-          className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-400"
+          className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 text-base"
           disabled={isSending}
         />
         <button
           type="submit"
           disabled={isSending || !newMessage.trim()}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium disabled:bg-gray-400"
+          className="px-5 sm:px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95"
         >
-          {isSending ? 'Sending...' : 'Send'}
+          <span className="hidden sm:inline">{isSending ? 'Sending...' : 'Send'}</span>
+          <span className="sm:hidden text-xl">✉️</span>
         </button>
       </form>
 
@@ -1012,32 +1014,34 @@ function ResourcesTab({ groupId, user }: { groupId: string; user: any }) {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6 gap-4">
-        <div className="flex-1">
-          <input
-            type="text"
-            placeholder="Search resources..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-400"
-          />
+      <div className="flex flex-col gap-3 mb-6">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex-1">
+            <input
+              type="text"
+              placeholder="🔍 Search resources..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 shadow-sm"
+            />
+          </div>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="w-full sm:w-auto px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 font-medium shadow-sm"
+          >
+            <option value="newest">📅 Newest First</option>
+            <option value="oldest">📅 Oldest First</option>
+            <option value="a-z">🔤 A to Z</option>
+            <option value="z-a">🔤 Z to A</option>
+          </select>
         </div>
-        <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-          className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
-        >
-          <option value="newest">📅 Newest First</option>
-          <option value="oldest">📅 Oldest First</option>
-          <option value="a-z">🔤 A to Z</option>
-          <option value="z-a">🔤 Z to A</option>
-        </select>
         <button
           onClick={() => setShowAddModal(true)}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium flex items-center gap-2 whitespace-nowrap"
+          className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
         >
           <span className="text-xl">+</span>
-          Add Resource
+          <span>Add Resource</span>
         </button>
       </div>
 
@@ -1045,33 +1049,33 @@ function ResourcesTab({ groupId, user }: { groupId: string; user: any }) {
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {sortedResources.map((resource: any) => (
-              <div key={resource._id} className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition">
+              <div key={resource._id} className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-5 border-2 border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
-                    <h4 className="font-semibold text-gray-900">{resource.title}</h4>
+                    <h4 className="font-bold text-gray-900 text-lg">{resource.title}</h4>
                     {resource.description && (
-                      <p className="text-sm text-gray-600 mt-1">{resource.description}</p>
+                      <p className="text-sm text-gray-600 mt-2 line-clamp-2">{resource.description}</p>
                     )}
                   </div>
-                  <span className="text-2xl ml-2">📄</span>
+                  <span className="text-3xl ml-2 flex-shrink-0">📄</span>
                 </div>
-                <div className="flex items-center justify-between mt-3">
-                  <div className="text-xs text-gray-500">
-                    {resource.views || 0} views • {new Date(resource.createdAt).toLocaleDateString()}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-4 gap-3">
+                  <div className="text-xs text-gray-500 font-medium">
+                    👁️ {resource.views || 0} views • 📅 {new Date(resource.createdAt).toLocaleDateString()}
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 w-full sm:w-auto">
                     <button
                       onClick={() => handleViewResource(resource._id, resource.link)}
-                      className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition"
+                      className="flex-1 sm:flex-none px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-md hover:shadow-lg active:scale-95"
                     >
-                      Open
+                      📖 Open
                     </button>
                     {(resource.uploadedBy === user?.id || resource.uploadedBy?._id === user?.id || user?.role === 'admin') && (
                       <button
                         onClick={() => handleDeleteResource(resource._id)}
-                        className="px-3 py-1 bg-red-100 text-red-700 text-sm rounded hover:bg-red-200 transition"
+                        className="px-4 py-2 bg-gradient-to-r from-red-100 to-red-50 text-red-700 text-sm font-medium rounded-lg hover:from-red-200 hover:to-red-100 transition-all border border-red-200 active:scale-95"
                       >
-                        Delete
+                        🗑️
                       </button>
                     )}
                   </div>
@@ -1085,7 +1089,7 @@ function ResourcesTab({ groupId, user }: { groupId: string; user: any }) {
               <button
                 onClick={handleLoadMore}
                 disabled={loadingMore}
-                className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
               >
                 {loadingMore ? (
                   <span className="flex items-center gap-2 justify-center">
@@ -1093,7 +1097,7 @@ function ResourcesTab({ groupId, user }: { groupId: string; user: any }) {
                     Loading...
                   </span>
                 ) : (
-                  'Load More Resources'
+                  '⬇️ Load More Resources'
                 )}
               </button>
             </div>
@@ -1141,19 +1145,29 @@ function AddResourceModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full">
-        <div className="border-b px-6 py-4 flex justify-between items-center">
-          <h2 className="text-xl font-bold text-gray-900">Add Resource</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-2xl">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn overflow-y-auto">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-xl w-full my-auto max-h-[95vh] overflow-y-auto transform transition-all animate-slideUp">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-5 rounded-t-3xl flex justify-between items-center sticky top-0 z-10">
+          <div>
+            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+              📚 Add Resource
+            </h2>
+            <p className="text-blue-100 text-sm mt-1">Share learning materials with your group</p>
+          </div>
+          <button 
+            onClick={onClose} 
+            className="text-white hover:bg-white/20 rounded-full w-10 h-10 flex items-center justify-center transition-all text-2xl font-light"
+            aria-label="Close"
+          >
             ×
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Title <span className="text-red-500">*</span>
+            <label className="block text-base font-semibold text-gray-900 mb-2">
+              📝 Resource Title <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -1161,24 +1175,24 @@ function AddResourceModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="e.g., Calculus Notes Chapter 3"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 text-base transition-all"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+            <label className="block text-base font-semibold text-gray-900 mb-2">💬 Description (Optional)</label>
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Brief description of the resource..."
-              rows={3}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              rows={4}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 text-base transition-all resize-none"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Link (Google Drive, Dropbox, etc.) <span className="text-red-500">*</span>
+            <label className="block text-base font-semibold text-gray-900 mb-2">
+              🔗 Resource Link <span className="text-red-500">*</span>
             </label>
             <input
               type="url"
@@ -1186,10 +1200,10 @@ function AddResourceModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
               value={formData.link}
               onChange={(e) => setFormData({ ...formData, link: e.target.value })}
               placeholder="https://drive.google.com/..."
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 text-base transition-all"
             />
-            <p className="text-xs text-gray-500 mt-1">
-              Share a link to your resource (make sure it's publicly accessible)
+            <p className="text-sm text-gray-600 mt-2 bg-blue-50 p-3 rounded-lg border border-blue-100">
+              💡 <strong>Tip:</strong> Make sure your link is publicly accessible (Google Drive, Dropbox, OneDrive, etc.)
             </p>
           </div>
 
@@ -1197,16 +1211,16 @@ function AddResourceModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium"
+              className="flex-1 px-6 py-3.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-semibold text-base shadow-sm hover:shadow-md active:scale-95"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium disabled:bg-gray-400"
+              className="flex-1 px-6 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all font-semibold text-base disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95"
             >
-              {isSubmitting ? 'Adding...' : 'Add Resource'}
+              {isSubmitting ? '⏳ Adding...' : '✅ Add Resource'}
             </button>
           </div>
         </form>
@@ -1367,11 +1381,11 @@ function SessionsTab({ groupId, user, isMember }: { groupId: string; user: any; 
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex gap-2">
+      <div className="flex flex-col gap-3 mb-6">
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setFilterStatus('all')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+            className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-sm font-medium transition ${
               filterStatus === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
@@ -1379,7 +1393,7 @@ function SessionsTab({ groupId, user, isMember }: { groupId: string; user: any; 
           </button>
           <button
             onClick={() => setFilterStatus('scheduled')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+            className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-sm font-medium transition ${
               filterStatus === 'scheduled' ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
@@ -1387,7 +1401,7 @@ function SessionsTab({ groupId, user, isMember }: { groupId: string; user: any; 
           </button>
           <button
             onClick={() => setFilterStatus('ongoing')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+            className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-sm font-medium transition ${
               filterStatus === 'ongoing' ? 'bg-yellow-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
@@ -1395,7 +1409,7 @@ function SessionsTab({ groupId, user, isMember }: { groupId: string; user: any; 
           </button>
           <button
             onClick={() => setFilterStatus('completed')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+            className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-sm font-medium transition ${
               filterStatus === 'completed' ? 'bg-gray-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
@@ -1404,7 +1418,7 @@ function SessionsTab({ groupId, user, isMember }: { groupId: string; user: any; 
         </div>
         <button
           onClick={() => setShowScheduleModal(true)}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium flex items-center gap-2"
+          className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all font-medium flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
         >
           <span className="text-xl">+</span>
           Schedule Session
@@ -1639,19 +1653,29 @@ function ScheduleSessionModal({ onClose, onSubmit }: any) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full">
-        <div className="border-b px-6 py-4 flex justify-between items-center">
-          <h2 className="text-xl font-bold text-gray-900">Schedule Session</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-2xl">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn overflow-y-auto">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-xl w-full my-auto max-h-[95vh] overflow-y-auto transform transition-all animate-slideUp">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-5 rounded-t-3xl flex justify-between items-center sticky top-0 z-10">
+          <div>
+            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+              🎓 Schedule Session
+            </h2>
+            <p className="text-indigo-100 text-sm mt-1">Plan a study session with your group</p>
+          </div>
+          <button 
+            onClick={onClose} 
+            className="text-white hover:bg-white/20 rounded-full w-10 h-10 flex items-center justify-center transition-all text-2xl font-light"
+            aria-label="Close"
+          >
             ×
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Session Title <span className="text-red-500">*</span>
+            <label className="block text-base font-semibold text-gray-900 mb-2">
+              📝 Session Title <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -1659,13 +1683,13 @@ function ScheduleSessionModal({ onClose, onSubmit }: any) {
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="e.g., Calculus Study Session"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 text-base transition-all"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Scheduled Date & Time <span className="text-red-500">*</span>
+            <label className="block text-base font-semibold text-gray-900 mb-2">
+              📅 Date & Time <span className="text-red-500">*</span>
             </label>
             <input
               type="datetime-local"
@@ -1673,42 +1697,42 @@ function ScheduleSessionModal({ onClose, onSubmit }: any) {
               min={getMinDateTime()}
               value={formData.scheduledAt}
               onChange={(e) => setFormData({ ...formData, scheduledAt: e.target.value })}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 text-base transition-all"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Duration (minutes) <span className="text-red-500">*</span>
+            <label className="block text-base font-semibold text-gray-900 mb-2">
+              ⏱️ Duration <span className="text-red-500">*</span>
             </label>
             <select
               required
               value={formData.duration}
               onChange={(e) => setFormData({ ...formData, duration: parseInt(e.target.value) })}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-900 text-base transition-all"
             >
-              <option value={30}>30 minutes</option>
-              <option value={45}>45 minutes</option>
-              <option value={60}>1 hour</option>
-              <option value={90}>1.5 hours</option>
-              <option value={120}>2 hours</option>
-              <option value={180}>3 hours</option>
+              <option value={30}>⏰ 30 minutes</option>
+              <option value={45}>⏰ 45 minutes</option>
+              <option value={60}>⏰ 1 hour</option>
+              <option value={90}>⏰ 1.5 hours</option>
+              <option value={120}>⏰ 2 hours</option>
+              <option value={180}>⏰ 3 hours</option>
             </select>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Meeting Link (Google Meet, Zoom, etc.)
+            <label className="block text-base font-semibold text-gray-900 mb-2">
+              🎥 Meeting Link (Optional)
             </label>
             <input
               type="url"
               value={formData.meetingLink}
               onChange={(e) => setFormData({ ...formData, meetingLink: e.target.value })}
               placeholder="https://meet.google.com/..."
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 text-base transition-all"
             />
-            <p className="text-xs text-gray-500 mt-1">
-              Optional: Add a meeting link for online sessions
+            <p className="text-sm text-gray-600 mt-2 bg-purple-50 p-3 rounded-lg border border-purple-100">
+              💡 <strong>Tip:</strong> Add Google Meet, Zoom, or Teams link for online sessions
             </p>
           </div>
 
@@ -1716,16 +1740,16 @@ function ScheduleSessionModal({ onClose, onSubmit }: any) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium"
+              className="flex-1 px-6 py-3.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-semibold text-base shadow-sm hover:shadow-md active:scale-95"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium disabled:bg-gray-400"
+              className="flex-1 px-6 py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all font-semibold text-base disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95"
             >
-              {isSubmitting ? 'Scheduling...' : 'Schedule Session'}
+              {isSubmitting ? '⏳ Scheduling...' : '✅ Schedule Session'}
             </button>
           </div>
         </form>
@@ -1830,19 +1854,29 @@ function EditSessionModal({ session, onClose, onSubmit }: any) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full">
-        <div className="border-b px-6 py-4 flex justify-between items-center">
-          <h2 className="text-xl font-bold text-gray-900">Edit Session</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-2xl">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn overflow-y-auto">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-xl w-full my-auto max-h-[95vh] overflow-y-auto transform transition-all animate-slideUp">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-5 rounded-t-3xl flex justify-between items-center sticky top-0 z-10">
+          <div>
+            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+              ✏️ Edit Session
+            </h2>
+            <p className="text-indigo-100 text-sm mt-1">Update session details</p>
+          </div>
+          <button 
+            onClick={onClose} 
+            className="text-white hover:bg-white/20 rounded-full w-10 h-10 flex items-center justify-center transition-all text-2xl font-light"
+            aria-label="Close"
+          >
             ×
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Session Title <span className="text-red-500">*</span>
+            <label className="block text-base font-semibold text-gray-900 mb-2">
+              📝 Session Title <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -1850,13 +1884,13 @@ function EditSessionModal({ session, onClose, onSubmit }: any) {
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="e.g., Calculus Study Session"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 text-base transition-all"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Scheduled Date & Time <span className="text-red-500">*</span>
+            <label className="block text-base font-semibold text-gray-900 mb-2">
+              📅 Date & Time <span className="text-red-500">*</span>
             </label>
             <input
               type="datetime-local"
@@ -1864,42 +1898,42 @@ function EditSessionModal({ session, onClose, onSubmit }: any) {
               min={getMinDateTime()}
               value={formData.scheduledAt}
               onChange={(e) => setFormData({ ...formData, scheduledAt: e.target.value })}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 text-base transition-all"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Duration (minutes) <span className="text-red-500">*</span>
+            <label className="block text-base font-semibold text-gray-900 mb-2">
+              ⏱️ Duration <span className="text-red-500">*</span>
             </label>
             <select
               required
               value={formData.duration}
               onChange={(e) => setFormData({ ...formData, duration: parseInt(e.target.value) })}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-900 text-base transition-all"
             >
-              <option value={30}>30 minutes</option>
-              <option value={45}>45 minutes</option>
-              <option value={60}>1 hour</option>
-              <option value={90}>1.5 hours</option>
-              <option value={120}>2 hours</option>
-              <option value={180}>3 hours</option>
+              <option value={30}>⏰ 30 minutes</option>
+              <option value={45}>⏰ 45 minutes</option>
+              <option value={60}>⏰ 1 hour</option>
+              <option value={90}>⏰ 1.5 hours</option>
+              <option value={120}>⏰ 2 hours</option>
+              <option value={180}>⏰ 3 hours</option>
             </select>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Meeting Link (Google Meet, Zoom, etc.)
+            <label className="block text-base font-semibold text-gray-900 mb-2">
+              🎥 Meeting Link (Optional)
             </label>
             <input
               type="url"
               value={formData.meetingLink}
               onChange={(e) => setFormData({ ...formData, meetingLink: e.target.value })}
               placeholder="https://meet.google.com/..."
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 text-base transition-all"
             />
-            <p className="text-xs text-gray-500 mt-1">
-              Optional: Add a meeting link for online sessions
+            <p className="text-sm text-gray-600 mt-2 bg-purple-50 p-3 rounded-lg border border-purple-100">
+              💡 <strong>Tip:</strong> Add Google Meet, Zoom, or Teams link for online sessions
             </p>
           </div>
 
@@ -1907,16 +1941,16 @@ function EditSessionModal({ session, onClose, onSubmit }: any) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium"
+              className="flex-1 px-6 py-3.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-semibold text-base shadow-sm hover:shadow-md active:scale-95"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium disabled:bg-gray-400"
+              className="flex-1 px-6 py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all font-semibold text-base disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95"
             >
-              {isSubmitting ? 'Updating...' : 'Update Session'}
+              {isSubmitting ? '⏳ Updating...' : '✅ Update Session'}
             </button>
           </div>
         </form>
@@ -1943,73 +1977,83 @@ function EditGroupModal({ group, onClose, onSubmit }: { group: Group; onClose: (
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full">
-        <div className="border-b px-6 py-4 flex justify-between items-center">
-          <h2 className="text-xl font-bold text-gray-900">Edit Group</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-2xl">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn overflow-y-auto">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-xl w-full my-auto max-h-[95vh] overflow-y-auto transform transition-all animate-slideUp">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-5 rounded-t-3xl flex justify-between items-center sticky top-0 z-10">
+          <div>
+            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+              ⚙️ Edit Group Settings
+            </h2>
+            <p className="text-blue-100 text-sm mt-1">Update your group configuration</p>
+          </div>
+          <button 
+            onClick={onClose} 
+            className="text-white hover:bg-white/20 rounded-full w-10 h-10 flex items-center justify-center transition-all text-2xl font-light"
+            aria-label="Close"
+          >
             ×
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Description
+            <label className="block text-base font-semibold text-gray-900 mb-2">
+              📝 Description
             </label>
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Describe your learning group..."
-              rows={3}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              rows={4}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 text-base transition-all resize-none"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              WhatsApp Group Link
+            <label className="block text-base font-semibold text-gray-900 mb-2">
+              💬 WhatsApp Group Link
             </label>
             <input
               type="url"
               value={formData.whatsappLink}
               onChange={(e) => setFormData({ ...formData, whatsappLink: e.target.value })}
               placeholder="https://chat.whatsapp.com/..."
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 text-base transition-all"
             />
-            <p className="text-xs text-gray-500 mt-1">
-              Optional: Add a WhatsApp group link for external communication
+            <p className="text-sm text-gray-600 mt-2 bg-green-50 p-3 rounded-lg border border-green-100">
+              💡 <strong>Optional:</strong> Add a WhatsApp group link for external communication
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Maximum Members
+            <label className="block text-base font-semibold text-gray-900 mb-2">
+              👥 Maximum Members
             </label>
             <select
               value={formData.maxMembers}
               onChange={(e) => setFormData({ ...formData, maxMembers: parseInt(e.target.value) })}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 text-base transition-all"
             >
-              <option value={10}>10 members</option>
-              <option value={20}>20 members</option>
-              <option value={30}>30 members</option>
-              <option value={50}>50 members</option>
-              <option value={100}>100 members</option>
+              <option value={10}>👥 10 members</option>
+              <option value={20}>👥 20 members</option>
+              <option value={30}>👥 30 members</option>
+              <option value={50}>👥 50 members</option>
+              <option value={100}>👥 100 members</option>
             </select>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Group Type
+            <label className="block text-base font-semibold text-gray-900 mb-2">
+              🔐 Group Type
             </label>
             <select
               value={formData.groupType}
               onChange={(e) => setFormData({ ...formData, groupType: e.target.value as 'public' | 'private' })}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 text-base transition-all"
             >
-              <option value="public">Public - Anyone can join</option>
-              <option value="private">Private - Invitation required</option>
+              <option value="public">🌍 Public - Anyone can join</option>
+              <option value="private">🔒 Private - Invitation required</option>
             </select>
           </div>
 
@@ -2017,16 +2061,16 @@ function EditGroupModal({ group, onClose, onSubmit }: { group: Group; onClose: (
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium"
+              className="flex-1 px-6 py-3.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-semibold text-base shadow-sm hover:shadow-md active:scale-95"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium disabled:bg-gray-400"
+              className="flex-1 px-6 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all font-semibold text-base disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95"
             >
-              {isSubmitting ? 'Updating...' : 'Update Group'}
+              {isSubmitting ? '⏳ Updating...' : '✅ Update Group'}
             </button>
           </div>
         </form>

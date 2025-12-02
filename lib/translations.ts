@@ -723,6 +723,11 @@ export const translations = {
       si: 'ඉගෙනුම් කණ්ඩායම්',
       ta: 'கற்றல் குழுக்கள்',
     },
+    subtitle: {
+      en: 'Find and join study groups or create your own',
+      si: 'අධ්‍යයන කණ්ඩායම් සොයාගෙන එකතුවන්න හෝ ඔබේම එකක් සාදන්න',
+      ta: 'படிப்பு குழுக்களைக் கண்டறிந்து சேரவும் அல்லது உங்கள் சொந்தமாக உருவாக்கவும்',
+    },
     searchPlaceholder: {
       en: 'Search groups...',
       si: 'කණ්ඩායම් සොයන්න...',
@@ -733,10 +738,10 @@ export const translations = {
       si: 'කණ්ඩායමක් සාදන්න',
       ta: 'குழுவை உருவாக்கு',
     },
-    allGroups: {
-      en: 'All Groups',
-      si: 'සියලු කණ්ඩායම්',
-      ta: 'அனைத்து குழுக்கள்',
+    exploreGroups: {
+      en: 'Explore Groups',
+      si: 'කණ්ඩායම් ගවේෂණය කරන්න',
+      ta: 'குழுக்களை ஆராயுங்கள்',
     },
     myGroups: {
       en: 'My Groups',
@@ -778,10 +783,340 @@ export const translations = {
       si: 'විෂය',
       ta: 'பாடம்',
     },
+    topic: {
+      en: 'Topic',
+      si: 'මාතෘකාව',
+      ta: 'தலைப்பு',
+    },
+    grade: {
+      en: 'Grade',
+      si: 'ශ්‍රේණිය',
+      ta: 'தரம்',
+    },
     members: {
       en: 'Members',
       si: 'සාමාජිකයන්',
       ta: 'உறுப்பினர்கள்',
+    },
+    member: {
+      en: 'Member',
+      si: 'සාමාජිකයා',
+      ta: 'உறுப்பினர்',
+    },
+    public: {
+      en: 'Public',
+      si: 'පොදු',
+      ta: 'பொது',
+    },
+    private: {
+      en: 'Private',
+      si: 'පෞද්ගලික',
+      ta: 'தனிப்பட்ட',
+    },
+    maxMembers: {
+      en: 'Max Members',
+      si: 'උපරිම සාමාජිකයන්',
+      ta: 'அதிகபட்ச உறுப்பினர்கள்',
+    },
+    whatsappLink: {
+      en: 'WhatsApp Link',
+      si: 'WhatsApp සබැඳිය',
+      ta: 'WhatsApp இணைப்பு',
+    },
+    groupType: {
+      en: 'Group Type',
+      si: 'කණ්ඩායම් වර්ගය',
+      ta: 'குழு வகை',
+    },
+    createdBy: {
+      en: 'Created by',
+      si: 'නිර්මාණය කළේ',
+      ta: 'உருவாக்கியவர்',
+    },
+    joined: {
+      en: 'Joined',
+      si: 'එක්වූ',
+      ta: 'சேர்ந்தது',
+    },
+    loadMore: {
+      en: 'Load More',
+      si: 'තව පූරණය කරන්න',
+      ta: 'மேலும் ஏற்று',
+    },
+    loading: {
+      en: 'Loading...',
+      si: 'පූරණය වෙමින්...',
+      ta: 'ஏற்றுகிறது...',
+    },
+    filters: {
+      en: 'Filters',
+      si: 'පෙරහන්',
+      ta: 'வடிப்பான்கள்',
+    },
+    allGrades: {
+      en: 'All Grades',
+      si: 'සියලු ශ්‍රේණි',
+      ta: 'அனைத்து தரங்கள்',
+    },
+    allSubjects: {
+      en: 'All Subjects',
+      si: 'සියලු විෂයයන්',
+      ta: 'அனைத்து பாடங்கள்',
+    },
+    allTopics: {
+      en: 'All Topics',
+      si: 'සියලු මාතෘකා',
+      ta: 'அனைத்து தலைப்புகள்',
+    },
+    overview: {
+      en: 'Overview',
+      si: 'දළ විසුරුම',
+      ta: 'கண்ணோட்டம்',
+    },
+    chat: {
+      en: 'Chat',
+      si: 'කතාබහ',
+      ta: 'அரட்டை',
+    },
+    resources: {
+      en: 'Resources',
+      si: 'සම්පත්',
+      ta: 'வளங்கள்',
+    },
+    sessions: {
+      en: 'Sessions',
+      si: 'සැසි',
+      ta: 'அமர்வுகள்',
+    },
+    typeMessage: {
+      en: 'Type a message...',
+      si: 'පණිවිඩයක් ටයිප් කරන්න...',
+      ta: 'செய்தியை தட்டச்சு செய்யவும்...',
+    },
+    send: {
+      en: 'Send',
+      si: 'යවන්න',
+      ta: 'அனுப்பு',
+    },
+    noMessages: {
+      en: 'No messages yet',
+      si: 'තවම පණිවිඩ නැත',
+      ta: 'இன்னும் செய்திகள் இல்லை',
+    },
+    startConversation: {
+      en: 'Start the conversation!',
+      si: 'සංවාදය ආරම්භ කරන්න!',
+      ta: 'உரையாடலைத் தொடங்குங்கள்!',
+    },
+    attachResource: {
+      en: 'Attach Resource',
+      si: 'සම්පතක් අමුණන්න',
+      ta: 'வளத்தை இணை',
+    },
+    editGroup: {
+      en: 'Edit Group',
+      si: 'කණ්ඩායම සංස්කරණය කරන්න',
+      ta: 'குழுவைத் திருத்து',
+    },
+    updateGroup: {
+      en: 'Update Group',
+      si: 'කණ්ඩායම යාවත්කාලීන කරන්න',
+      ta: 'குழுவைப் புதுப்பி',
+    },
+  },
+
+  // Sessions
+  sessions: {
+    title: {
+      en: 'Sessions',
+      si: 'සැසි',
+      ta: 'அமர்வுகள்',
+    },
+    scheduleSession: {
+      en: 'Schedule Session',
+      si: 'සැසියක් සැලසුම් කරන්න',
+      ta: 'அமர்வை திட்டமிடு',
+    },
+    sessionTitle: {
+      en: 'Session Title',
+      si: 'සැසි මාතෘකාව',
+      ta: 'அமர்வு தலைப்பு',
+    },
+    sessionDescription: {
+      en: 'Description',
+      si: 'විස්තරය',
+      ta: 'விளக்கம்',
+    },
+    dateTime: {
+      en: 'Date & Time',
+      si: 'දිනය සහ වේලාව',
+      ta: 'தேதி & நேரம்',
+    },
+    duration: {
+      en: 'Duration',
+      si: 'කාල සීමාව',
+      ta: 'கால அளவு',
+    },
+    minutes: {
+      en: 'minutes',
+      si: 'මිනිත්තු',
+      ta: 'நிமிடங்கள்',
+    },
+    meetingLink: {
+      en: 'Meeting Link',
+      si: 'රැස්වීම් සබැඳිය',
+      ta: 'சந்திப்பு இணைப்பு',
+    },
+    maxAttendees: {
+      en: 'Max Attendees',
+      si: 'උපරිම සහභාගිවන්නන්',
+      ta: 'அதிகபட்ச பங்கேற்பாளர்கள்',
+    },
+    join: {
+      en: 'Join',
+      si: 'එක්වන්න',
+      ta: 'சேரு',
+    },
+    leave: {
+      en: 'Leave',
+      si: 'ඉවත්වන්න',
+      ta: 'விலகு',
+    },
+    start: {
+      en: 'Start',
+      si: 'ආරම්භ කරන්න',
+      ta: 'தொடங்கு',
+    },
+    end: {
+      en: 'End',
+      si: 'අවසන් කරන්න',
+      ta: 'முடி',
+    },
+    cancel: {
+      en: 'Cancel',
+      si: 'අවලංගු කරන්න',
+      ta: 'ரத்து செய்',
+    },
+    delete: {
+      en: 'Delete',
+      si: 'මකන්න',
+      ta: 'நீக்கு',
+    },
+    edit: {
+      en: 'Edit',
+      si: 'සංස්කරණය',
+      ta: 'திருத்து',
+    },
+    status: {
+      scheduled: {
+        en: 'Scheduled',
+        si: 'සැලසුම් කර ඇත',
+        ta: 'திட்டமிடப்பட்டது',
+      },
+      inProgress: {
+        en: 'In Progress',
+        si: 'සිදුවෙමින්',
+        ta: 'நடைபெறுகிறது',
+      },
+      completed: {
+        en: 'Completed',
+        si: 'සම්පූර්ණයි',
+        ta: 'முடிந்தது',
+      },
+      cancelled: {
+        en: 'Cancelled',
+        si: 'අවලංගු කරන ලදී',
+        ta: 'ரத்து செய்யப்பட்டது',
+      },
+    },
+    teacher: {
+      en: 'Teacher',
+      si: 'ගුරුවරයා',
+      ta: 'ஆசிரியர்',
+    },
+    attendees: {
+      en: 'Attendees',
+      si: 'සහභාගිවන්නන්',
+      ta: 'பங்கேற்பாளர்கள்',
+    },
+    noSessions: {
+      en: 'No sessions scheduled',
+      si: 'සැලසුම් කළ සැසි නැත',
+      ta: 'திட்டமிடப்பட்ட அமர்வுகள் இல்லை',
+    },
+    allStatus: {
+      en: 'All Status',
+      si: 'සියලු තත්ත්ව',
+      ta: 'அனைத்து நிலைகள்',
+    },
+    joinMeeting: {
+      en: 'Join Meeting',
+      si: 'රැස්වීමට එක්වන්න',
+      ta: 'சந்திப்பில் சேரவும்',
+    },
+  },
+
+  // Resources
+  resources: {
+    title: {
+      en: 'Resources',
+      si: 'සම්පත්',
+      ta: 'வளங்கள்',
+    },
+    addResource: {
+      en: 'Add Resource',
+      si: 'සම්පතක් එකතු කරන්න',
+      ta: 'வளத்தைச் சேர்',
+    },
+    resourceTitle: {
+      en: 'Title',
+      si: 'මාතෘකාව',
+      ta: 'தலைப்பு',
+    },
+    resourceDescription: {
+      en: 'Description',
+      si: 'විස්තරය',
+      ta: 'விளக்கம்',
+    },
+    resourceLink: {
+      en: 'Link',
+      si: 'සබැඳිය',
+      ta: 'இணைப்பு',
+    },
+    resourceType: {
+      en: 'Type',
+      si: 'වර්ගය',
+      ta: 'வகை',
+    },
+    views: {
+      en: 'Views',
+      si: 'නරඹීම්',
+      ta: 'பார்வைகள்',
+    },
+    noResources: {
+      en: 'No resources yet',
+      si: 'තවම සම්පත් නැත',
+      ta: 'இன்னும் வளங்கள் இல்லை',
+    },
+    addFirst: {
+      en: 'Add the first resource!',
+      si: 'පළමු සම්පත එකතු කරන්න!',
+      ta: 'முதல் வளத்தைச் சேர்க்கவும்!',
+    },
+    sortBy: {
+      en: 'Sort by',
+      si: 'අනුපිළිවෙලට',
+      ta: 'வரிசைப்படுத்து',
+    },
+    newest: {
+      en: 'Newest',
+      si: 'නවතම',
+      ta: 'புதியது',
+    },
+    oldest: {
+      en: 'Oldest',
+      si: 'පැරණිතම',
+      ta: 'பழையது',
     },
   },
 
@@ -842,6 +1177,131 @@ export const translations = {
       si: 'ශ්‍රේණි මට්ටම',
       ta: 'தர நிலை',
     },
+    name: {
+      en: 'Name',
+      si: 'නම',
+      ta: 'பெயர்',
+    },
+    country: {
+      en: 'Country',
+      si: 'රට',
+      ta: 'நாடு',
+    },
+    region: {
+      en: 'Region',
+      si: 'කලාපය',
+      ta: 'பிராந்தியம்',
+    },
+    skills: {
+      en: 'Skills & Expertise',
+      si: 'කුසලතා සහ විශේෂඥතාව',
+      ta: 'திறன்கள் & நிபுணத்துவம்',
+    },
+    addSkill: {
+      en: 'Add Skill',
+      si: 'කුසලතාවක් එක් කරන්න',
+      ta: 'திறனைச் சேர்',
+    },
+    subject: {
+      en: 'Subject',
+      si: 'විෂය',
+      ta: 'பாடம்',
+    },
+    topics: {
+      en: 'Topics',
+      si: 'මාතෘකා',
+      ta: 'தலைப்புகள்',
+    },
+    proficiency: {
+      en: 'Proficiency',
+      si: 'ප්‍රවීණතාව',
+      ta: 'தேர்ச்சி',
+    },
+    beginner: {
+      en: 'Beginner',
+      si: 'ආරම්භක',
+      ta: 'தொடக்கநிலை',
+    },
+    intermediate: {
+      en: 'Intermediate',
+      si: 'මධ්‍යම',
+      ta: 'இடைநிலை',
+    },
+    advanced: {
+      en: 'Advanced',
+      si: 'උසස්',
+      ta: 'மேம்பட்ட',
+    },
+    expert: {
+      en: 'Expert',
+      si: 'විශේෂඥ',
+      ta: 'நிபுணர்',
+    },
+    reputation: {
+      en: 'Reputation',
+      si: 'කීර්තිය',
+      ta: 'புகழ்',
+    },
+    points: {
+      en: 'Points',
+      si: 'ලකුණු',
+      ta: 'புள்ளிகள்',
+    },
+    sessionsTaught: {
+      en: 'Sessions Taught',
+      si: 'ඉගැන්වූ සැසි',
+      ta: 'கற்பித்த அமர்வுகள்',
+    },
+    resourcesShared: {
+      en: 'Resources Shared',
+      si: 'බෙදාගත් සම්පත්',
+      ta: 'பகிர்ந்த வளங்கள்',
+    },
+    memberSince: {
+      en: 'Member Since',
+      si: 'සාමාජිකත්වය ආරම්භය',
+      ta: 'உறுப்பினர் ஆன நாள்',
+    },
+    verified: {
+      en: 'Verified',
+      si: 'සත්‍යාපිතයි',
+      ta: 'சரிபார்க்கப்பட்டது',
+    },
+    unverified: {
+      en: 'Not Verified',
+      si: 'සත්‍යාපනය නොවූ',
+      ta: 'சரிபார்க்கப்படவில்லை',
+    },
+    saveChanges: {
+      en: 'Save Changes',
+      si: 'වෙනස්කම් සුරකින්න',
+      ta: 'மாற்றங்களைச் சேமி',
+    },
+    saving: {
+      en: 'Saving...',
+      si: 'සුරකිමින්...',
+      ta: 'சேமிக்கிறது...',
+    },
+    cancelEdit: {
+      en: 'Cancel',
+      si: 'අවලංගු කරන්න',
+      ta: 'ரத்து செய்',
+    },
+    logout: {
+      en: 'Logout',
+      si: 'පිටවීම',
+      ta: 'வெளியேறு',
+    },
+    noSkills: {
+      en: 'No skills added yet',
+      si: 'තවම කුසලතා එකතු කර නැත',
+      ta: 'இன்னும் திறன்கள் சேர்க்கப்படவில்லை',
+    },
+    tellAboutYourself: {
+      en: 'Tell us about yourself...',
+      si: 'ඔබ ගැන අපට කියන්න...',
+      ta: 'உங்களைப் பற்றி சொல்லுங்கள்...',
+    },
   },
 
   // Help Page
@@ -850,6 +1310,11 @@ export const translations = {
       en: 'Help & Support',
       si: 'උදව් සහ සහාය',
       ta: 'உதவி & ஆதரவு',
+    },
+    subtitle: {
+      en: 'Community Help Requests',
+      si: 'ප්‍රජා උදව් ඉල්ලීම්',
+      ta: 'சமூக உதவி கோரிக்கைகள்',
     },
     faq: {
       en: 'Frequently Asked Questions',
@@ -870,6 +1335,85 @@ export const translations = {
       en: 'Your Message',
       si: 'ඔබේ පණිවිඩය',
       ta: 'உங்கள் செய்தி',
+    },
+    allRequests: {
+      en: 'All Requests',
+      si: 'සියලු ඉල්ලීම්',
+      ta: 'அனைத்து கோரிக்கைகள்',
+    },
+    myRequests: {
+      en: 'My Requests',
+      si: 'මගේ ඉල්ලීම්',
+      ta: 'எனது கோரிக்கைகள்',
+    },
+    createRequest: {
+      en: 'Create Request',
+      si: 'ඉල්ලීමක් සාදන්න',
+      ta: 'கோரிக்கை உருவாக்கு',
+    },
+    noRequests: {
+      en: 'No requests found',
+      si: 'ඉල්ලීම් හමු නොවීය',
+      ta: 'கோரிக்கைகள் எதுவும் கிடைக்கவில்லை',
+    },
+    beFirst: {
+      en: 'Be the first to ask for help!',
+      si: 'උදව් ඉල්ලා සිටින පළමු පුද්ගලයා වන්න!',
+      ta: 'உதவி கேட்கும் முதல் நபராக இருங்கள்!',
+    },
+    respond: {
+      en: 'Respond',
+      si: 'ප්‍රතිචාර දක්වන්න',
+      ta: 'பதிலளி',
+    },
+    responses: {
+      en: 'Responses',
+      si: 'ප්‍රතිචාර',
+      ta: 'பதில்கள்',
+    },
+    markFulfilled: {
+      en: 'Mark as Fulfilled',
+      si: 'ඉටු කළ ලෙස සලකුණු කරන්න',
+      ta: 'நிறைவேற்றப்பட்டதாக குறி',
+    },
+    closeRequest: {
+      en: 'Close Request',
+      si: 'ඉල්ලීම වසන්න',
+      ta: 'கோரிக்கையை மூடு',
+    },
+    status: {
+      open: {
+        en: 'Open',
+        si: 'විවෘතයි',
+        ta: 'திறந்தது',
+      },
+      fulfilled: {
+        en: 'Fulfilled',
+        si: 'ඉටු කරන ලදී',
+        ta: 'நிறைவேற்றப்பட்டது',
+      },
+      closed: {
+        en: 'Closed',
+        si: 'වසා ඇත',
+        ta: 'மூடப்பட்டது',
+      },
+    },
+    type: {
+      resource: {
+        en: 'Resource',
+        si: 'සම්පත',
+        ta: 'வளம்',
+      },
+      explanation: {
+        en: 'Explanation',
+        si: 'පැහැදිලි කිරීම',
+        ta: 'விளக்கம்',
+      },
+      studyPartner: {
+        en: 'Study Partner',
+        si: 'අධ්‍යයන සහකරු',
+        ta: 'படிப்பு கூட்டாளி',
+      },
     },
   },
 

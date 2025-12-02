@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios, { getUser, clearToken } from '@/lib/axios';
 import Navigation from '@/components/Navigation';
-import { LanguageProvider } from '@/lib/LanguageContext';
+import { LanguageProvider, useLanguage } from '@/lib/LanguageContext';
+import { useToast } from '@/context';
 import { Frown, Trophy, GraduationCap, BookOpen, User, Globe, MapPin, FileText, Save, Lightbulb, Target, Book, Trash2 } from 'lucide-react';
 
 interface UserProfile {
@@ -35,6 +36,7 @@ interface UserProfile {
 
 export default function ProfilePage() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -47,6 +49,50 @@ export default function ProfilePage() {
     region: '',
   });
   const [skills, setSkills] = useState<Array<{subject: string; topics: string[]; proficiency: string}>>([]);
+
+  return (
+    <LanguageProvider>
+      <ProfilePageContent 
+        router={router}
+        showToast={showToast}
+        profile={profile}
+        setProfile={setProfile}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
+        isLoaded={isLoaded}
+        setIsLoaded={setIsLoaded}
+        isEditing={isEditing}
+        setIsEditing={setIsEditing}
+        isSaving={isSaving}
+        setIsSaving={setIsSaving}
+        editForm={editForm}
+        setEditForm={setEditForm}
+        skills={skills}
+        setSkills={setSkills}
+      />
+    </LanguageProvider>
+  );
+}
+
+function ProfilePageContent({
+  router,
+  showToast,
+  profile,
+  setProfile,
+  isLoading,
+  setIsLoading,
+  isLoaded,
+  setIsLoaded,
+  isEditing,
+  setIsEditing,
+  isSaving,
+  setIsSaving,
+  editForm,
+  setEditForm,
+  skills,
+  setSkills,
+}: any) {
+  const { t } = useLanguage();
 
   useEffect(() => {
     fetchProfile();
@@ -82,9 +128,9 @@ export default function ProfilePage() {
       });
       await fetchProfile();
       setIsEditing(false);
-      alert('Profile updated successfully!');
+      showToast('Profile updated successfully!', 'success');
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to update profile');
+      showToast(err.response?.data?.message || 'Failed to update profile', 'error');
     } finally {
       setIsSaving(false);
     }
@@ -117,9 +163,9 @@ export default function ProfilePage() {
           <div className="absolute -top-40 -right-40 w-96 h-96 bg-linear-to-br from-blue-300/30 to-purple-300/30 rounded-full blur-3xl animate-float" />
           <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-linear-to-br from-purple-300/30 to-pink-300/30 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
         </div>
-        <div className="text-center z-10">
+          <div className="text-center z-10">
           <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-600 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600 animate-pulse">Loading your profile...</p>
+          <p className="text-gray-600 animate-pulse">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -143,7 +189,6 @@ export default function ProfilePage() {
   }
 
   return (
-    <LanguageProvider>
       <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-100 relative overflow-hidden">
         {/* Animated Background Elements */}
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -158,8 +203,8 @@ export default function ProfilePage() {
         <main className="max-w-6xl mx-auto px-4 py-8 relative z-10">
           {/* Page Header */}
           <div className={`mb-8 transition-all duration-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <h1 className="text-3xl font-bold text-gray-900">My Profile</h1>
-            <p className="text-gray-600 mt-1">Manage your account information and skills</p>
+            <h1 className="text-3xl font-bold text-gray-900">{t('profile.title')}</h1>
+            <p className="text-gray-600 mt-1">{t('profile.personalInfo')}</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -184,7 +229,7 @@ export default function ProfilePage() {
                         ? 'bg-green-100 text-green-700' 
                         : 'bg-yellow-100 text-yellow-700'
                     }`}>
-                      {profile.verified ? '✓ Verified' : '⏳ Pending'}
+                      {profile.verified ? `✓ ${t('profile.verified')}` : `⏳ ${t('profile.unverified')}`}
                     </span>
                     <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700 capitalize">
                       {profile.role}
@@ -200,7 +245,7 @@ export default function ProfilePage() {
                         : 'bg-linear-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600'
                     }`}
                   >
-                    {isEditing ? '✕ Cancel Editing' : '✏️ Edit Profile'}
+                    {isEditing ? `✕ ${t('profile.cancelEdit')}` : `✏️ ${t('profile.editProfile')}`}
                   </button>
                 </div>
               </div>
@@ -209,27 +254,27 @@ export default function ProfilePage() {
               <div className={`bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl p-6 transition-all duration-700 delay-200 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 text-gray-900">
                   <span className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">⭐</span>
-                  Reputation
+                  {t('profile.reputation')}
                 </h3>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-xl">
                     <div className="flex items-center gap-3">
                       <Trophy className="w-7 h-7 text-yellow-600" />
-                      <span className="text-gray-700 font-medium">Points</span>
+                      <span className="text-gray-700 font-medium">{t('profile.points')}</span>
                     </div>
                     <span className="text-2xl font-bold text-yellow-600">{profile.reputation.points}</span>
                   </div>
                   <div className="flex items-center justify-between p-3 bg-green-50 rounded-xl">
                     <div className="flex items-center gap-3">
                       <GraduationCap className="w-7 h-7 text-green-600" />
-                      <span className="text-gray-700 font-medium">Sessions</span>
+                      <span className="text-gray-700 font-medium">{t('profile.sessionsTaught')}</span>
                     </div>
                     <span className="text-2xl font-bold text-green-600">{profile.reputation.sessionsTaught}</span>
                   </div>
                   <div className="flex items-center justify-between p-3 bg-blue-50 rounded-xl">
                     <div className="flex items-center gap-3">
                       <BookOpen className="w-7 h-7 text-blue-600" />
-                      <span className="text-gray-700 font-medium">Resources</span>
+                      <span className="text-gray-700 font-medium">{t('profile.resourcesShared')}</span>
                     </div>
                     <span className="text-2xl font-bold text-blue-600">{profile.reputation.resourcesShared}</span>
                   </div>
@@ -245,44 +290,44 @@ export default function ProfilePage() {
                   <span className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
                     <User className="w-5 h-5 text-blue-600" />
                   </span>
-                  Profile Details
+                  {t('profile.personalInfo')}
                 </h3>
 
                 {!isEditing ? (
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="p-4 bg-gray-50 rounded-xl">
-                        <p className="text-sm font-medium text-gray-500 mb-1">Full Name</p>
+                        <p className="text-sm font-medium text-gray-500 mb-1">{t('profile.name')}</p>
                         <p className="text-gray-900 font-medium">{profile.profile.name}</p>
                       </div>
                       <div className="p-4 bg-gray-50 rounded-xl">
-                        <p className="text-sm font-medium text-gray-500 mb-1">Email Address</p>
+                        <p className="text-sm font-medium text-gray-500 mb-1">{t('auth.email')}</p>
                         <p className="text-gray-900 font-medium">{profile.email}</p>
                       </div>
                       <div className="p-4 bg-gray-50 rounded-xl">
                         <p className="text-sm font-medium text-gray-500 mb-1 flex items-center gap-1.5">
-                          <Globe className="w-4 h-4 text-blue-600" /> Country
+                          <Globe className="w-4 h-4 text-blue-600" /> {t('profile.country')}
                         </p>
-                        <p className="text-gray-900 font-medium">{profile.profile.country || 'Not specified'}</p>
+                        <p className="text-gray-900 font-medium">{profile.profile.country || t('auth.selectOption')}</p>
                       </div>
                       <div className="p-4 bg-gray-50 rounded-xl">
                         <p className="text-sm font-medium text-gray-500 mb-1 flex items-center gap-1.5">
-                          <MapPin className="w-4 h-4 text-indigo-600" /> Region
+                          <MapPin className="w-4 h-4 text-indigo-600" /> {t('profile.region')}
                         </p>
-                        <p className="text-gray-900 font-medium">{profile.profile.region || 'Not specified'}</p>
+                        <p className="text-gray-900 font-medium">{profile.profile.region || t('auth.selectOption')}</p>
                       </div>
                     </div>
                     {profile.profile.bio && (
                       <div className="p-4 bg-gray-50 rounded-xl">
                         <p className="text-sm font-medium text-gray-500 mb-1 flex items-center gap-1.5">
-                          <FileText className="w-4 h-4 text-purple-600" /> Bio
+                          <FileText className="w-4 h-4 text-purple-600" /> {t('profile.bio')}
                         </p>
                         <p className="text-gray-900">{profile.profile.bio}</p>
                       </div>
                     )}
                     {!profile.profile.bio && (
                       <div className="p-4 bg-gray-50 rounded-xl text-center">
-                        <p className="text-gray-400 italic">No bio added yet. Click "Edit Profile" to add one.</p>
+                        <p className="text-gray-400 italic">{t('profile.tellAboutYourself')}</p>
                       </div>
                     )}
                   </div>
@@ -290,7 +335,7 @@ export default function ProfilePage() {
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('profile.name')}</label>
                         <input
                           type="text"
                           value={editForm.name}
@@ -299,7 +344,7 @@ export default function ProfilePage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Email (Read-only)</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('auth.email')}</label>
                         <input
                           type="text"
                           value={profile.email}
@@ -308,39 +353,39 @@ export default function ProfilePage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-1.5">
-                          <Globe className="w-4 h-4 text-blue-600" /> Country
+                        <label className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1.5">
+                          <Globe className="w-4 h-4 text-blue-600" /> {t('profile.country')}
                         </label>
                         <input
                           type="text"
                           value={editForm.country}
                           onChange={(e) => setEditForm({ ...editForm, country: e.target.value })}
-                          placeholder="Enter your country"
+                          placeholder={t('profile.country')}
                           className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-gray-900"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-1.5">
-                          <MapPin className="w-4 h-4 text-indigo-600" /> Region
+                        <label className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1.5">
+                          <MapPin className="w-4 h-4 text-indigo-600" /> {t('profile.region')}
                         </label>
                         <input
                           type="text"
                           value={editForm.region}
                           onChange={(e) => setEditForm({ ...editForm, region: e.target.value })}
-                          placeholder="Enter your region"
+                          placeholder={t('profile.region')}
                           className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-gray-900"
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-1.5">
-                        <FileText className="w-4 h-4 text-purple-600" /> Bio
+                      <label className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1.5">
+                        <FileText className="w-4 h-4 text-purple-600" /> {t('profile.bio')}
                       </label>
                       <textarea
                         value={editForm.bio}
                         onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
                         rows={4}
-                        placeholder="Tell us about yourself..."
+                        placeholder={t('profile.tellAboutYourself')}
                         className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-gray-900"
                       />
                     </div>
@@ -352,12 +397,12 @@ export default function ProfilePage() {
                       {isSaving ? (
                         <>
                           <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          <span>Saving...</span>
+                          <span>{t('profile.saving')}</span>
                         </>
                       ) : (
                         <>
                           <Save className="w-5 h-5" />
-                          <span>Save Changes</span>
+                          <span>{t('profile.saveChanges')}</span>
                         </>
                       )}
                     </button>
@@ -372,14 +417,14 @@ export default function ProfilePage() {
                     <span className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
                       <Lightbulb className="w-5 h-5 text-green-600" />
                     </span>
-                    Skills & Expertise
+                    {t('profile.skills')}
                   </h3>
                   {isEditing && (
                     <button
                       onClick={addSkill}
                       className="px-4 py-2 bg-linear-to-r from-green-500 to-emerald-500 text-white text-sm rounded-xl hover:from-green-600 hover:to-emerald-600 transition-all duration-300 flex items-center gap-2"
                     >
-                      <span>➕</span> Add Skill
+                      <span>➕</span> {t('profile.addSkill')}
                     </button>
                   )}
                 </div>
@@ -387,14 +432,14 @@ export default function ProfilePage() {
                 {skills.length === 0 ? (
                   <div className="text-center py-12 bg-gray-50 rounded-xl">
                     <Target className="w-16 h-16 mx-auto mb-3 text-gray-400" />
-                    <p className="text-gray-500 mb-2">No skills added yet</p>
-                    <p className="text-gray-400 text-sm">Add your skills to help others find you for peer learning</p>
+                    <p className="text-gray-500 mb-2">{t('profile.noSkills')}</p>
+                    <p className="text-gray-400 text-sm">{t('profile.addSkill')}</p>
                     {isEditing && (
                       <button
                         onClick={addSkill}
                         className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-300"
                       >
-                        Add your first skill
+                        {t('profile.addSkill')}
                       </button>
                     )}
                   </div>
@@ -432,14 +477,14 @@ export default function ProfilePage() {
                               type="text"
                               value={skill.subject}
                               onChange={(e) => updateSkill(index, 'subject', e.target.value)}
-                              placeholder="Subject (e.g., Mathematics)"
+                              placeholder={t('profile.subject')}
                               className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900"
                             />
                             <input
                               type="text"
                               value={skill.topics.join(', ')}
                               onChange={(e) => updateSkill(index, 'topics', e.target.value.split(',').map(t => t.trim()))}
-                              placeholder="Topics (comma-separated)"
+                              placeholder={t('profile.topics')}
                               className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900"
                             />
                             <div className="flex items-center gap-2">
@@ -448,10 +493,10 @@ export default function ProfilePage() {
                                 onChange={(e) => updateSkill(index, 'proficiency', e.target.value)}
                                 className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900"
                               >
-                                <option value="beginner">Beginner</option>
-                                <option value="intermediate">Intermediate</option>
-                                <option value="advanced">Advanced</option>
-                                <option value="expert">Expert</option>
+                                <option value="beginner">{t('profile.beginner')}</option>
+                                <option value="intermediate">{t('profile.intermediate')}</option>
+                                <option value="advanced">{t('profile.advanced')}</option>
+                                <option value="expert">{t('profile.expert')}</option>
                               </select>
                               <button
                                 onClick={() => removeSkill(index)}
@@ -471,6 +516,5 @@ export default function ProfilePage() {
           </div>
         </main>
       </div>
-    </LanguageProvider>
   );
 }

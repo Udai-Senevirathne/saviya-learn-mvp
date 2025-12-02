@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import axios from '@/lib/axios';
 import { getUser } from '@/lib/axios';
 import Navigation from '@/components/Navigation';
-import { LanguageProvider } from '@/lib/LanguageContext';
+import { LanguageProvider, useLanguage } from '@/lib/LanguageContext';
+import { useToast } from '@/context';
 import { Handshake, Search, BookOpen, FileText, Link as LinkIcon } from 'lucide-react';
 
 interface Request {
@@ -48,6 +49,7 @@ interface Request {
 
 export default function CommunityHelpPage() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [requests, setRequests] = useState<Request[]>([]);
   const [myRequests, setMyRequests] = useState<Request[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -94,7 +96,7 @@ export default function CommunityHelpPage() {
       setShowCreateModal(false);
       fetchRequests();
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to create request');
+      showToast(err.response?.data?.message || 'Failed to create request', 'error');
     }
   };
 
@@ -113,7 +115,7 @@ export default function CommunityHelpPage() {
       // Also refresh the lists
       fetchRequests();
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to respond');
+      showToast(err.response?.data?.message || 'Failed to respond', 'error');
     }
   };
 
@@ -125,7 +127,7 @@ export default function CommunityHelpPage() {
         setSelectedRequest(null);
       }
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to mark as fulfilled');
+      showToast(err.response?.data?.message || 'Failed to mark as fulfilled', 'error');
     }
   };
 
@@ -137,7 +139,7 @@ export default function CommunityHelpPage() {
         setSelectedRequest(null);
       }
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to close request');
+      showToast(err.response?.data?.message || 'Failed to close request', 'error');
     }
   };
 

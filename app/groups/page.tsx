@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios, { getUser } from '@/lib/axios';
 import Navigation from '@/components/Navigation';
-import { LanguageProvider } from '@/lib/LanguageContext';
+import { LanguageProvider, useLanguage } from '@/lib/LanguageContext';
+import { useToast } from '@/context';
 
 interface Group {
   _id: string;
@@ -22,6 +23,7 @@ interface Group {
 export default function GroupsPage() {
   const router = useRouter();
   const user = getUser();
+  const { showToast, showConfirm } = useToast();
   const [groups, setGroups] = useState<Group[]>([]);
   const [myGroups, setMyGroups] = useState<Group[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -119,25 +121,31 @@ export default function GroupsPage() {
   const handleJoinGroup = async (groupId: string) => {
     try {
       await axios.post(`/groups/${groupId}/join`);
-      alert('Successfully joined the group!');
+      showToast('Successfully joined the group!', 'success');
       fetchGroups();
       fetchMyGroups();
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
-      alert(error.response?.data?.message || 'Failed to join group');
+      showToast(error.response?.data?.message || 'Failed to join group', 'error');
     }
   };
 
   const handleLeaveGroup = async (groupId: string) => {
-    if (!confirm('Are you sure you want to leave this group?')) return;
+    const confirmed = await showConfirm({
+      title: 'Leave Group',
+      message: 'Are you sure you want to leave this group?',
+      confirmText: 'Leave',
+      type: 'warning'
+    });
+    if (!confirmed) return;
     try {
       await axios.post(`/groups/${groupId}/leave`);
-      alert('Left the group');
+      showToast('Left the group', 'success');
       fetchMyGroups();
       fetchGroups();
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
-      alert(error.response?.data?.message || 'Failed to leave group');
+      showToast(error.response?.data?.message || 'Failed to leave group', 'error');
     }
   };
 
@@ -464,6 +472,7 @@ function GroupCard({
 
 // Create Group Modal Component
 function CreateGroupModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: () => void }) {
+  const { showToast } = useToast();
   const [formData, setFormData] = useState({
     grade: '',
     subject: '',
@@ -486,7 +495,7 @@ function CreateGroupModal({ onClose, onSuccess }: { onClose: () => void; onSucce
         ...formData,
         maxMembers: Number(formData.maxMembers),
       });
-      alert('Group created successfully!');
+      showToast('Group created successfully!', 'success');
       onSuccess();
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };

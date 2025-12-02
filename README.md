@@ -775,7 +775,7 @@ in the Software without restriction...
 
 ---
 
-## 👨‍💻 Author
+## 👨‍💻 Developers
 
 <div align="center">
 
@@ -785,10 +785,26 @@ in the Software without restriction...
 
 ### **Dineth Janitha**
 
-*Full Stack Developer & Project Lead*
+*Software Engineer*
 
 [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/dinethjanitha)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/dinethjanitha)
+
+</div>
+<br>
+
+<div align="center">
+
+<a href="https://github.com/Udai-Senevirathne">
+<img src="https://github.com/Udai-Senevirathne.png" width="120" height="120" style="border-radius: 50%;" alt="Udai Senevirathne"/>
+</a>
+
+### **Udai Senevirathne**
+
+*Software Engineering Undergraduate | Developer*
+
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Udai-Senevirathne)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/udaisenevirathne)
 
 </div>
 

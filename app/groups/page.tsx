@@ -122,8 +122,11 @@ export default function GroupsPage() {
     try {
       await axios.post(`/groups/${groupId}/join`);
       showToast('Successfully joined the group!', 'success');
-      fetchGroups();
-      fetchMyGroups();
+      // Refetch both lists to update UI immediately
+      await Promise.all([
+        fetchGroups(1, false),
+        fetchMyGroups(1, false)
+      ]);
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
       showToast(error.response?.data?.message || 'Failed to join group', 'error');
@@ -141,8 +144,11 @@ export default function GroupsPage() {
     try {
       await axios.post(`/groups/${groupId}/leave`);
       showToast('Left the group', 'success');
-      fetchMyGroups();
-      fetchGroups();
+      // Refetch both lists to update UI immediately
+      await Promise.all([
+        fetchMyGroups(1, false),
+        fetchGroups(1, false)
+      ]);
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
       showToast(error.response?.data?.message || 'Failed to leave group', 'error');
@@ -150,11 +156,15 @@ export default function GroupsPage() {
   };
 
   const isUserMember = (group: Group) => {
-    if (!user?._id) return false;
+    if (!user) return false;
+    // Support both user.id and user._id
+    const currentUserId = user.id || user._id;
+    if (!currentUserId) return false;
+    
     return group.members.some(m => {
       // Handle both populated (object) and non-populated (string) userId
       const memberId = typeof m.userId === 'string' ? m.userId : m.userId._id;
-      return memberId === user._id;
+      return memberId === currentUserId;
     });
   };
 

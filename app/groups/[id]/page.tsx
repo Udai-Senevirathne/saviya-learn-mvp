@@ -1882,46 +1882,97 @@ function ResourcePickerModal({ resources, onClose, onSelect }: { resources: any[
   );
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl max-w-2xl w-full max-h-[80vh] flex flex-col">
-        <div className="p-6 border-b">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">Attach Resource</h2>
-            <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn overflow-y-auto">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full my-auto max-h-[90vh] overflow-hidden transform transition-all animate-slideUp flex flex-col">
+        {/* Header */}
+        <div className="bg-linear-to-r from-blue-600 to-indigo-600 px-6 py-5 rounded-t-3xl flex justify-between items-center sticky top-0 z-10">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+              <Paperclip className="w-5 h-5 text-white" />
+            </div>
+            <h2 className="text-xl sm:text-2xl font-bold text-white">Attach Resource</h2>
           </div>
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search resources..."
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-          />
+          <button
+            onClick={onClose}
+            className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-all hover:rotate-90 duration-300"
+            aria-label="Close"
+          >
+            <X className="w-6 h-6 text-white" />
+          </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6">
+        {/* Search Bar */}
+        <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+          <div className="relative">
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search resources by title or description..."
+              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 transition-all"
+              autoFocus
+            />
+            <BookOpen className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          </div>
+        </div>
+
+        {/* Resources List */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
           {filteredResources.length === 0 ? (
             <div className="text-center py-12 text-gray-500">
-              <div className="text-5xl mb-3">📚</div>
-              <p>No resources found</p>
+              <BookOpen className="w-20 h-20 mx-auto mb-4 text-gray-300" />
+              <p className="text-lg font-medium text-gray-600">No resources found</p>
+              <p className="text-sm text-gray-500 mt-2">
+                {search ? 'Try a different search term' : 'No resources available to attach'}
+              </p>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 gap-3">
               {filteredResources.map((resource) => (
                 <button
                   key={resource._id}
-                  onClick={() => onSelect(resource)}
-                  className="w-full text-left p-4 border rounded-lg hover:bg-blue-50 hover:border-blue-500 transition"
+                  onClick={() => {
+                    onSelect(resource);
+                    onClose();
+                  }}
+                  className="w-full text-left p-4 sm:p-5 bg-white border-2 border-gray-200 rounded-2xl hover:border-blue-500 hover:shadow-lg transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] group"
                 >
-                  <div className="flex items-start gap-3">
-                    <span className="text-3xl shrink-0">{resource.type === 'video' ? '🎥' : resource.type === 'document' ? '📄' : '🔗'}</span>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-gray-900 mb-1">{resource.title}</h3>
-                      {resource.description && (
-                        <p className="text-sm text-gray-600 line-clamp-2">{resource.description}</p>
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <div className="shrink-0 w-12 h-12 sm:w-14 sm:h-14 bg-linear-to-br from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center group-hover:from-blue-200 group-hover:to-indigo-200 transition-all">
+                      {resource.type === 'video' ? (
+                        <span className="text-2xl sm:text-3xl">🎥</span>
+                      ) : resource.type === 'document' ? (
+                        <span className="text-2xl sm:text-3xl">📄</span>
+                      ) : (
+                        <span className="text-2xl sm:text-3xl">🔗</span>
                       )}
-                      <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
-                        <span className="px-2 py-1 bg-gray-100 rounded-full capitalize">{resource.type}</span>
-                        <span>by {resource.uploadedBy?.profile?.name || resource.uploadedBy?.email}</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-gray-900 mb-1 text-base sm:text-lg group-hover:text-blue-600 transition-colors line-clamp-1">
+                        {resource.title}
+                      </h3>
+                      {resource.description && (
+                        <p className="text-sm text-gray-600 line-clamp-2 mb-3">{resource.description}</p>
+                      )}
+                      <div className="flex flex-wrap items-center gap-2 text-xs">
+                        <span className="px-3 py-1 bg-linear-to-r from-blue-100 to-indigo-100 text-blue-700 rounded-full capitalize font-medium">
+                          {resource.type}
+                        </span>
+                        {resource.uploadedBy && (
+                          <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full flex items-center gap-1">
+                            <User className="w-3 h-3" />
+                            {resource.uploadedBy?.profile?.name || resource.uploadedBy?.email}
+                          </span>
+                        )}
+                        <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full flex items-center gap-1">
+                          <Calendar className="w-3 h-3" />
+                          {new Date(resource.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                        <Check className="w-5 h-5 text-white" />
                       </div>
                     </div>
                   </div>
@@ -1929,6 +1980,21 @@ function ResourcePickerModal({ resources, onClose, onSelect }: { resources: any[
               ))}
             </div>
           )}
+        </div>
+
+        {/* Footer */}
+        <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-3xl">
+          <div className="flex items-center justify-between text-sm text-gray-600">
+            <span className="font-medium">
+              {filteredResources.length} resource{filteredResources.length !== 1 ? 's' : ''} available
+            </span>
+            <button
+              onClick={onClose}
+              className="px-4 py-2 text-gray-700 hover:text-gray-900 font-medium transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       </div>
     </div>

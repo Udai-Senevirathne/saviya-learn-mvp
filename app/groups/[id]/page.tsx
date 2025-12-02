@@ -312,10 +312,15 @@ export default function GroupDetailsPage() {
     const userId = user.id || user._id;
     const result = group.members.some(m => {
       // Handle both populated (object) and non-populated (string) userId
+      if (!m.userId) {
+        console.log('⚠️ Member has no userId:', m);
+        return false;
+      }
+      
       let memberId: string;
       if (typeof m.userId === 'string') {
         memberId = m.userId;
-      } else if (m.userId && typeof m.userId === 'object' && '_id' in m.userId) {
+      } else if (typeof m.userId === 'object' && '_id' in m.userId) {
         memberId = m.userId._id;
       } else {
         console.log('⚠️ Invalid member format:', m);
@@ -340,10 +345,14 @@ export default function GroupDetailsPage() {
     const userId = user.id || user._id;
     const member = group.members.find(m => {
       // Handle both populated (object) and non-populated (string) userId
+      if (!m.userId) {
+        return false;
+      }
+      
       let memberId: string;
       if (typeof m.userId === 'string') {
         memberId = m.userId;
-      } else if (m.userId && typeof m.userId === 'object' && '_id' in m.userId) {
+      } else if (typeof m.userId === 'object' && '_id' in m.userId) {
         memberId = m.userId._id;
       } else {
         return false;
@@ -775,22 +784,22 @@ function ChatTab({ messages, newMessage, setNewMessage, onSendMessage, isSending
           </div>
         ) : (
           messages.map((msg: ChatMessage) => {
-            const isOwn = msg.userId._id === currentUserId;
+            const isOwn = msg.userId?._id === currentUserId;
             const hasResource = msg.resourceId && msg.resourceLink;
             const hasReply = msg.replyTo;
             return (
               <div key={msg._id} className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[70%] group`}>
-                  {!isOwn && (
+                  {!isOwn && msg.userId && (
                     <div className="text-xs text-gray-600 mb-1">
-                      {msg.userId.profile?.name || msg.userId.email}
+                      {msg.userId.profile?.name || msg.userId.email || 'Unknown User'}
                     </div>
                   )}
                   <div className={`rounded-lg p-3 ${isOwn ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-900'} relative`}>
-                    {hasReply && (
+                    {hasReply && msg.replyTo?.userId && (
                       <div className={`mb-2 pl-3 py-2 border-l-4 ${isOwn ? 'border-blue-400 bg-blue-700' : 'border-gray-400 bg-gray-100'} rounded`}>
                         <div className={`text-xs font-semibold ${isOwn ? 'text-blue-200' : 'text-gray-700'} mb-1`}>
-                          {msg.replyTo.userId.profile?.name || msg.replyTo.userId.email}
+                          {msg.replyTo.userId?.profile?.name || msg.replyTo.userId?.email || 'Unknown User'}
                         </div>
                         <div className={`text-xs ${isOwn ? 'text-blue-100' : 'text-gray-600'} line-clamp-2`}>
                           {msg.replyTo.message}
@@ -806,7 +815,7 @@ function ChatTab({ messages, newMessage, setNewMessage, onSendMessage, isSending
                     </button>
                     <p className="whitespace-pre-wrap break-words">{msg.message}</p>
                     
-                    {hasResource && (
+                    {hasResource && msg.resourceId && (
                       <a
                         href={msg.resourceLink}
                         target="_blank"
@@ -815,14 +824,14 @@ function ChatTab({ messages, newMessage, setNewMessage, onSendMessage, isSending
                       >
                         <div className="flex items-center gap-2">
                           <span className="text-2xl">
-                            {msg.resourceId.type === 'video' ? '🎥' : msg.resourceId.type === 'document' ? '📄' : '🔗'}
+                            {msg.resourceId?.type === 'video' ? '🎥' : msg.resourceId?.type === 'document' ? '📄' : '🔗'}
                           </span>
                           <div className="flex-1 min-w-0">
                             <div className={`font-semibold text-sm ${isOwn ? 'text-white' : 'text-gray-900'}`}>
-                              {msg.resourceId.title}
+                              {msg.resourceId?.title || 'Resource'}
                             </div>
                             <div className={`text-xs ${isOwn ? 'text-blue-100' : 'text-gray-600'} capitalize`}>
-                              {msg.resourceId.type}
+                              {msg.resourceId?.type || 'unknown'}
                             </div>
                           </div>
                           <span className={`text-xl ${isOwn ? 'text-blue-200' : 'text-gray-500'}`}>↗</span>

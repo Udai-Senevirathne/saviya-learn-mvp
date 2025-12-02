@@ -25,6 +25,14 @@ interface HomeStats {
     actionType: string;
     details: any;
     timestamp: string;
+    userId?: {
+      _id: string;
+      email: string;
+      role: string;
+      profile?: {
+        name?: string;
+      };
+    };
   }>;
 }
 
@@ -48,6 +56,10 @@ export default function HomePage() {
     try {
       // Use existing endpoints to build stats
       let userGroups: any[] = [];
+      let recentActivity: any[] = [];
+      let userSessions: any[] = [];
+      let userResources: any[] = [];
+      
       try {
         const groupsResponse = await axios.get('/groups/my?page=1&limit=50');
         userGroups = groupsResponse.data.groups || [];
@@ -55,15 +67,49 @@ export default function HomePage() {
         console.error('Error fetching groups:', e);
       }
 
+      try {
+        const activityResponse = await axios.get('/activity-logs/my?page=1&limit=10');
+        recentActivity = activityResponse.data.logs || [];
+        console.log('Activity logs fetched:', recentActivity);
+      } catch (e) {
+        console.error('Error fetching activity logs:', e);
+      }
+
+      try {
+        const sessionsResponse = await axios.get('/sessions/list?page=1&limit=1000');
+        userSessions = sessionsResponse.data.sessions || [];
+        // Count sessions where user is in attendees array or is the teacher
+        const attendedSessions = userSessions.filter(session => 
+          session.attendees?.some((a: any) => a.userId === user?.id || a.userId?._id === user?.id) ||
+          session.teacherId === user?.id ||
+          session.teacherId?._id === user?.id
+        );
+        console.log('User attended sessions:', attendedSessions.length);
+      } catch (e) {
+        console.error('Error fetching sessions:', e);
+      }
+
+      try {
+        const resourcesResponse = await axios.get('/resources/my?page=1&limit=1000');
+        userResources = resourcesResponse.data.resources || [];
+        console.log('User uploaded resources:', userResources.length);
+      } catch (e) {
+        console.error('Error fetching resources:', e);
+      }
+
       const dashboardStats = {
         statistics: {
           groupCount: userGroups.length,
-          sessionCount: user?.reputation?.sessionsAttended || 0,
-          resourceCount: user?.reputation?.resourcesShared || 0,
+          sessionCount: userSessions.filter(session => 
+            session.attendees?.some((a: any) => a.userId === user?.id || a.userId?._id === user?.id) ||
+            session.teacherId === user?.id ||
+            session.teacherId?._id === user?.id
+          ).length,
+          resourceCount: userResources.length,
           activeSessions: 0,
         },
         groups: userGroups,
-        recentActivity: [],
+        recentActivity: recentActivity,
       };
 
       setStats(dashboardStats);
@@ -233,12 +279,17 @@ export default function HomePage() {
                     'uploaded_resource': '',
                     'created_group': '',
                     'completed_session': '',
+                    'resource_create': '',
+                    'name_change': '',
                   };
+                  const userName = activity.userId?.profile?.name || activity.userId?.email || 'You';
                   return (
                     <div key={activity._id} className="flex items-start gap-3 border-l-2 border-blue-500 pl-3 py-2 hover:bg-blue-50/50 transition-all duration-200 rounded-r-lg animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
                       <div className="text-xl">{actionIcons[activity.actionType] || ''}</div>
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-900 capitalize">{activity.actionType.replace(/_/g, ' ')}</p>
+                        <p className="text-sm font-medium text-gray-900">
+                          <span className="capitalize">{activity.actionType.replace(/_/g, ' ')}</span>
+                        </p>
                         <p className="text-xs text-gray-500">{new Date(activity.timestamp).toLocaleString()}</p>
                       </div>
                     </div>

@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios, { getUser, clearToken } from '@/lib/axios';
+import Navigation from '@/components/Navigation';
+import { LanguageProvider } from '@/lib/LanguageContext';
 
 interface Group {
   _id: string;
@@ -155,45 +157,12 @@ export default function GroupsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100">
-      {/* Header */}
-      <header className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-8">
-              <h1 className="text-2xl font-bold text-blue-600 cursor-pointer" onClick={() => router.push('/home')}>
-                P2P Learning
-              </h1>
-              <nav className="hidden md:flex gap-6">
-                <button onClick={() => router.push('/home')} className="text-gray-700 hover:text-blue-600 font-medium">
-                  Home
-                </button>
-                <button className="text-blue-600 font-bold border-b-2 border-blue-600">
-                  Groups
-                </button>
-                <button className="text-gray-700 hover:text-blue-600 font-medium">Sessions</button>
-                <button className="text-gray-700 hover:text-blue-600 font-medium">Resources</button>
-              </nav>
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => router.push('/profile')}
-                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
-              >
-                Profile
-              </button>
-              <button
-                onClick={() => { clearToken(); router.push('/'); }}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
-              >
-                Logout
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+    <LanguageProvider>
+      <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50">
+        {/* Shared Navigation */}
+        <Navigation user={user} />
 
-      <main className="max-w-7xl mx-auto px-4 py-8">
+        <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Page Title & Create Button */}
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -368,7 +337,8 @@ export default function GroupsPage() {
           }}
         />
       )}
-    </div>
+      </div>
+    </LanguageProvider>
   );
 }
 

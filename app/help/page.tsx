@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from '@/lib/axios';
 import { getUser } from '@/lib/axios';
+import Navigation from '@/components/Navigation';
+import { LanguageProvider } from '@/lib/LanguageContext';
 
 interface Request {
   _id: string;
@@ -156,23 +158,27 @@ export default function CommunityHelpPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Community Help 🤝</h1>
-              <p className="text-gray-600 mt-1">Request or share educational resources with the community</p>
+    <LanguageProvider>
+      <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50">
+        {/* Shared Navigation */}
+        <Navigation user={currentUser} />
+
+        {/* Page Header */}
+        <div className="bg-white/80 backdrop-blur-sm border-b">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">Community Help 🤝</h1>
+                <p className="text-gray-600 mt-1">Request or share educational resources with the community</p>
+              </div>
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="px-6 py-3 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 font-medium flex items-center gap-2 hover:scale-105 hover:shadow-lg"
+              >
+                <span className="text-xl">+</span>
+                New Request
+              </button>
             </div>
-            <button
-              onClick={() => setShowCreateModal(true)}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium flex items-center gap-2"
-            >
-              <span className="text-xl">+</span>
-              New Request
-            </button>
-          </div>
         </div>
       </div>
 
@@ -273,7 +279,8 @@ export default function CommunityHelpPage() {
           onCloseRequest={handleCloseRequest}
         />
       )}
-    </div>
+      </div>
+    </LanguageProvider>
   );
 }
 

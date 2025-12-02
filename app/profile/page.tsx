@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios, { getUser, clearToken } from '@/lib/axios';
+import Navigation from '@/components/Navigation';
+import { LanguageProvider } from '@/lib/LanguageContext';
 
 interface UserProfile {
   _id: string;
@@ -140,36 +142,17 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-100 relative overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-linear-to-br from-blue-300/20 to-purple-300/20 rounded-full blur-3xl animate-float" />
-        <div className="absolute top-1/2 -left-40 w-80 h-80 bg-linear-to-br from-purple-300/20 to-pink-300/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '3s' }} />
-        <div className="absolute -bottom-20 right-1/4 w-72 h-72 bg-linear-to-br from-pink-300/20 to-blue-300/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '5s' }} />
-      </div>
-
-      {/* Header */}
-      <header className={`bg-white/80 backdrop-blur-xl shadow-lg sticky top-0 z-50 transition-all duration-700 ${isLoaded ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}>
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold bg-linear-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent flex items-center gap-2">
-            <span className="text-2xl">👤</span> My Profile
-          </h1>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => router.push('/home')}
-              className="px-4 py-2 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 hover:scale-105 hover:shadow-md"
-            >
-              🏠 Home
-            </button>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-linear-to-r from-red-500 to-red-600 text-white rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-300 hover:scale-105 hover:shadow-md"
-            >
-              Logout
-            </button>
-          </div>
+    <LanguageProvider>
+      <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-100 relative overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-linear-to-br from-blue-300/20 to-purple-300/20 rounded-full blur-3xl animate-float" />
+          <div className="absolute top-1/2 -left-40 w-80 h-80 bg-linear-to-br from-purple-300/20 to-pink-300/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '3s' }} />
+          <div className="absolute -bottom-20 right-1/4 w-72 h-72 bg-linear-to-br from-pink-300/20 to-blue-300/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '5s' }} />
         </div>
-      </header>
+
+        {/* Shared Navigation */}
+        <Navigation user={{ id: profile._id, _id: profile._id, email: profile.email, profile: profile.profile, role: profile.role }} />
 
       <main className="max-w-4xl mx-auto px-4 py-8 relative z-10">
         {/* Profile Card */}
@@ -413,6 +396,7 @@ export default function ProfilePage() {
           )}
         </div>
       </main>
-    </div>
+      </div>
+    </LanguageProvider>
   );
 }

@@ -100,6 +100,8 @@ export default function SignupPage() {
       setTimeout(() => {
         router.push('/login');
       }, 3000);
+      
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.response?.data?.message || t('auth.registrationFailed'));
     } finally {

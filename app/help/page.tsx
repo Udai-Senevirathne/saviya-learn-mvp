@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -85,6 +86,7 @@ export default function CommunityHelpPage() {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleCreateRequest = async (data: any) => {
     try {
       // Convert empty groupId to undefined
@@ -95,6 +97,7 @@ export default function CommunityHelpPage() {
       await axios.post('/resource-requests', requestData);
       setShowCreateModal(false);
       fetchRequests();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       showToast(err.response?.data?.message || 'Failed to create request', 'error');
     }
@@ -114,6 +117,7 @@ export default function CommunityHelpPage() {
       
       // Also refresh the lists
       fetchRequests();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       showToast(err.response?.data?.message || 'Failed to respond', 'error');
     }
@@ -126,6 +130,7 @@ export default function CommunityHelpPage() {
       if (selectedRequest?._id === requestId) {
         setSelectedRequest(null);
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       showToast(err.response?.data?.message || 'Failed to mark as fulfilled', 'error');
     }
@@ -138,6 +143,7 @@ export default function CommunityHelpPage() {
       if (selectedRequest?._id === requestId) {
         setSelectedRequest(null);
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       showToast(err.response?.data?.message || 'Failed to close request', 'error');
     }
@@ -178,9 +184,10 @@ export default function CommunityHelpPage() {
               </div>
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="hidden sm:flex px-6 py-3 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 font-medium items-center gap-2 hover:scale-105 hover:shadow-lg"
+                className="flex px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 font-medium items-center gap-2 hover:scale-105 hover:shadow-lg shadow-md text-sm sm:text-base whitespace-nowrap"
               >
-                New Request
+                <span className="hidden sm:inline">New Request</span>
+                <span className="sm:hidden">New</span>
               </button>
             </div>
         </div>
@@ -300,6 +307,7 @@ export default function CommunityHelpPage() {
 }
 
 // Request Card Component
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function RequestCard({ request, currentUserId, onClick }: any) {
   const statusColors = {
     open: 'bg-green-100 text-green-800',
@@ -352,6 +360,7 @@ function RequestCard({ request, currentUserId, onClick }: any) {
 }
 
 // Create Request Modal
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function CreateRequestModal({ onClose, onSubmit }: any) {
   const [formData, setFormData] = useState({
     title: '',
@@ -361,12 +370,11 @@ function CreateRequestModal({ onClose, onSubmit }: any) {
     type: 'notes',
     groupId: '',
   });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [groups, setGroups] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    fetchMyGroups();
-  }, []);
+  
 
   const fetchMyGroups = async () => {
     try {
@@ -387,17 +395,33 @@ function CreateRequestModal({ onClose, onSubmit }: any) {
     setIsSubmitting(false);
   };
 
+  useEffect(() => {
+    const exe = async () => {
+      await fetchMyGroups();
+    }
+
+    exe()
+  }, []);
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="border-b px-6 py-4 flex justify-between items-center sticky top-0 bg-white">
-          <h2 className="text-xl font-bold text-gray-900">Create Resource Request</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-2xl">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col animate-slideUp">
+        {/* Gradient Header */}
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-5 flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+              <Handshake className="w-6 h-6 text-white" />
+            </div>
+            <h2 className="text-xl sm:text-2xl font-bold text-white">Create Resource Request</h2>
+          </div>
+          <button 
+            onClick={onClose} 
+            className="text-white/80 hover:text-white hover:bg-white/20 rounded-lg w-8 h-8 flex items-center justify-center transition-all text-2xl"
+          >
             ×
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Title <span className="text-red-500">*</span>
@@ -408,7 +432,7 @@ function CreateRequestModal({ onClose, onSubmit }: any) {
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="e.g., Need calculus practice problems"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-400"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-400 transition-all"
             />
           </div>
 
@@ -422,11 +446,11 @@ function CreateRequestModal({ onClose, onSubmit }: any) {
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Describe what you're looking for..."
               rows={4}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-400"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-400 transition-all resize-none"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Subject <span className="text-red-500">*</span>
@@ -437,7 +461,7 @@ function CreateRequestModal({ onClose, onSubmit }: any) {
                 value={formData.subject}
                 onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                 placeholder="e.g., Mathematics"
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-400"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-400 transition-all"
               />
             </div>
 
@@ -451,7 +475,7 @@ function CreateRequestModal({ onClose, onSubmit }: any) {
                 value={formData.topic}
                 onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
                 placeholder="e.g., Calculus"
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-400"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-400 transition-all"
               />
             </div>
           </div>
@@ -464,7 +488,7 @@ function CreateRequestModal({ onClose, onSubmit }: any) {
               required
               value={formData.type}
               onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white transition-all"
             >
               <option value="notes">Notes</option>
               <option value="book">Book</option>
@@ -481,7 +505,7 @@ function CreateRequestModal({ onClose, onSubmit }: any) {
             <select
               value={formData.groupId}
               onChange={(e) => setFormData({ ...formData, groupId: e.target.value })}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white transition-all"
             >
               <option value="">None (Public Request)</option>
               {groups.map((group) => (
@@ -492,18 +516,19 @@ function CreateRequestModal({ onClose, onSubmit }: any) {
             </select>
           </div>
 
-          <div className="flex gap-3 pt-4">
+          {/* Footer with Actions */}
+          <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4 border-t">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium"
+              className="flex-1 px-6 py-2.5 sm:py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-medium"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium disabled:bg-gray-400"
+              className="flex-1 px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
             >
               {isSubmitting ? 'Creating...' : 'Create Request'}
             </button>
@@ -515,6 +540,7 @@ function CreateRequestModal({ onClose, onSubmit }: any) {
 }
 
 // Request Detail Modal
+
 function RequestDetailModal({ request, currentUserId, onClose, onRespond, onMarkFulfilled, onCloseRequest }: any) {
   const [responseMessage, setResponseMessage] = useState('');
   const [responseLink, setResponseLink] = useState('');
@@ -545,16 +571,25 @@ function RequestDetailModal({ request, currentUserId, onClose, onRespond, onMark
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="border-b px-6 py-4 flex justify-between items-center sticky top-0 bg-white">
-          <h2 className="text-xl font-bold text-gray-900">Request Details</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-2xl">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col animate-slideUp">
+        {/* Gradient Header */}
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-5 flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+              <BookOpen className="w-6 h-6 text-white" />
+            </div>
+            <h2 className="text-xl sm:text-2xl font-bold text-white">Request Details</h2>
+          </div>
+          <button 
+            onClick={onClose} 
+            className="text-white/80 hover:text-white hover:bg-white/20 rounded-lg w-8 h-8 flex items-center justify-center transition-all text-2xl"
+          >
             ×
           </button>
         </div>
 
-        <div className="p-6">
+        <div className="p-4 sm:p-6 overflow-y-auto flex-1">
           {/* Request Info */}
           <div className="mb-6">
             <div className="flex items-start justify-between mb-3">
@@ -586,16 +621,16 @@ function RequestDetailModal({ request, currentUserId, onClose, onRespond, onMark
 
           {/* Requester Actions */}
           {isRequester && request.status === 'open' && (
-            <div className="flex gap-3 mb-6">
+            <div className="flex flex-col sm:flex-row gap-3 mb-6">
               <button
                 onClick={() => onMarkFulfilled(request._id)}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm"
+                className="px-4 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all text-sm font-medium shadow-md hover:shadow-lg"
               >
                 Mark as Fulfilled
               </button>
               <button
                 onClick={() => onCloseRequest(request._id)}
-                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition text-sm"
+                className="px-4 py-2.5 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl hover:from-gray-700 hover:to-gray-800 transition-all text-sm font-medium shadow-md hover:shadow-lg"
               >
                 Close Request
               </button>
@@ -664,7 +699,7 @@ function RequestDetailModal({ request, currentUserId, onClose, onRespond, onMark
                     onChange={(e) => setResponseMessage(e.target.value)}
                     placeholder="Share your knowledge or provide a helpful response..."
                     rows={3}
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-400"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-400 transition-all resize-none"
                   />
                 </div>
 
@@ -680,14 +715,14 @@ function RequestDetailModal({ request, currentUserId, onClose, onRespond, onMark
                     value={responseLink}
                     onChange={(e) => setResponseLink(e.target.value)}
                     placeholder="Or paste a link to an external resource..."
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-400"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-400 transition-all"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium disabled:bg-gray-400"
+                  className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
                 >
                   {isSubmitting ? 'Submitting...' : 'Submit Response'}
                 </button>

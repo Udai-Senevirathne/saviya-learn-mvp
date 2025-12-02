@@ -183,7 +183,7 @@ export default function HomePage() {
             { label: t('home.stats.myGroups'), value: stats?.statistics.groupCount || 0, icon: Users, color: 'blue', delay: '150' },
             { label: t('home.stats.sessionsJoined'), value: stats?.statistics.sessionCount || 0, icon: Calendar, color: 'green', delay: '200' },
             { label: t('home.stats.activeNow'), value: stats?.statistics.activeSessions || 0, icon: Zap, color: 'purple', delay: '250' },
-            { label: t('home.stats.resources'), value: stats?.statistics.resourceCount || 0, icon: FileText, color: 'orange', delay: '300' },
+            { label: t('home.stats.resources'), value: stats?.statistics.resourceCount || 0, icon: FileText, color: 'purple', delay: '300' },
           ].map((stat) => {
             const IconComponent = stat.icon;
             return (
@@ -303,10 +303,10 @@ export default function HomePage() {
               <HelpCircle className="w-10 h-10 text-purple-500 mb-3 mx-auto group-hover:scale-125 transition-transform duration-300" />
               <div className="text-sm font-medium text-gray-700 group-hover:text-purple-600 transition-colors">{t('home.actions.getHelp')}</div>
             </button>
-            <button className="p-6 border-2 border-dashed border-gray-300 rounded-xl hover:border-orange-500 hover:bg-orange-50/50 transition-all duration-300 group hover:scale-105 hover:shadow-lg">
+            {/* <button className="p-6 border-2 border-dashed border-gray-300 rounded-xl hover:border-orange-500 hover:bg-orange-50/50 transition-all duration-300 group hover:scale-105 hover:shadow-lg">
               <Calendar className="w-10 h-10 text-orange-500 mb-3 mx-auto group-hover:scale-125 transition-transform duration-300" />
               <div className="text-sm font-medium text-gray-700 group-hover:text-orange-600 transition-colors">{t('home.actions.scheduleSession')}</div>
-            </button>
+            </button> */}
           </div>
         </div>
 

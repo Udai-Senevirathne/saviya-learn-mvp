@@ -119,8 +119,8 @@ export default function ForgotPasswordPage() {
         </form>
 
         <div className={`mt-5 sm:mt-6 text-center transition-all duration-500 delay-400 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-          <Link href="/login" className="inline-flex items-center gap-2 text-white hover:text-white/90 font-semibold hover:underline transition-all duration-200 text-sm sm:text-base">
-            <ArrowLeft className="w-4 h-4" />
+          <Link href="/login" className="inline-flex items-center gap-2 text-blue-600 hover:text-indigo-600 font-semibold hover:underline transition-all duration-200 text-sm sm:text-base group">
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             <span>{t('forgotPassword.backToLogin')}</span>
           </Link>
         </div>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { API_BASE_URL, getToken } from '@/lib/api';
+import { useAdminTheme } from '@/context';
 
 interface Session {
   _id: string;
@@ -35,6 +36,7 @@ interface SessionAnalytics {
 }
 
 export default function SessionManagementPage() {
+  const { isDark } = useAdminTheme();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [total, setTotal] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -120,11 +122,11 @@ export default function SessionManagementPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'scheduled': return 'bg-blue-500/20 text-blue-400';
-      case 'active': return 'bg-green-500/20 text-green-400';
-      case 'completed': return 'bg-slate-500/20 text-slate-300';
-      case 'cancelled': return 'bg-red-500/20 text-red-400';
-      default: return 'bg-slate-500/20 text-slate-300';
+      case 'scheduled': return isDark ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-100 text-blue-700';
+      case 'active': return isDark ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-700';
+      case 'completed': return isDark ? 'bg-slate-600 text-slate-300' : 'bg-gray-100 text-gray-600';
+      case 'cancelled': return isDark ? 'bg-red-500/20 text-red-400' : 'bg-red-100 text-red-700';
+      default: return isDark ? 'bg-slate-600 text-slate-300' : 'bg-gray-100 text-gray-600';
     }
   };
 
@@ -141,8 +143,8 @@ export default function SessionManagementPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Session Management</h1>
-          <p className="text-slate-400">Manage study sessions and schedules</p>
+          <h1 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>Session Management</h1>
+          <p className={isDark ? 'text-slate-400' : 'text-gray-600'}>Manage study sessions and schedules</p>
         </div>
         <div className="flex gap-2">
           <button
@@ -168,13 +170,13 @@ export default function SessionManagementPage() {
 
       {/* Analytics Modal */}
       {showAnalytics && analytics && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-          <div className="bg-slate-800 border border-slate-700 rounded-xl max-w-lg w-full p-6 mx-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className={`${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'} border rounded-xl max-w-lg w-full p-6 mx-4 shadow-2xl`}>
             <div className="flex justify-between items-start mb-6">
-              <h2 className="text-xl font-bold text-white">Session Analytics</h2>
+              <h2 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>Session Analytics</h2>
               <button
                 onClick={() => setShowAnalytics(false)}
-                className="text-slate-400 hover:text-white text-xl"
+                className={`${isDark ? 'text-slate-400 hover:text-slate-300' : 'text-gray-400 hover:text-gray-600'} text-xl`}
               >
                 ✕
               </button>
@@ -182,25 +184,25 @@ export default function SessionManagementPage() {
 
             <div className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-slate-700/50 rounded-lg p-4 text-center">
-                  <p className="text-3xl font-bold text-white">{analytics.totalSessions}</p>
-                  <p className="text-slate-400 text-sm">Total Sessions</p>
+                <div className={`${isDark ? 'bg-slate-700/50' : 'bg-gray-50'} rounded-lg p-4 text-center`}>
+                  <p className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{analytics.totalSessions}</p>
+                  <p className={`${isDark ? 'text-slate-400' : 'text-gray-500'} text-sm`}>Total Sessions</p>
                 </div>
-                <div className="bg-slate-700/50 rounded-lg p-4 text-center">
-                  <p className="text-3xl font-bold text-blue-400">{analytics.avgAttendance.toFixed(1)}</p>
-                  <p className="text-slate-400 text-sm">Avg Attendance</p>
+                <div className={`${isDark ? 'bg-blue-500/20' : 'bg-blue-50'} rounded-lg p-4 text-center`}>
+                  <p className={`text-3xl font-bold ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>{analytics.avgAttendance.toFixed(1)}</p>
+                  <p className={`${isDark ? 'text-slate-400' : 'text-gray-500'} text-sm`}>Avg Attendance</p>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-white font-medium mb-3">Status Distribution</h3>
+                <h3 className={`${isDark ? 'text-white' : 'text-gray-900'} font-medium mb-3`}>Status Distribution</h3>
                 <div className="space-y-2">
                   {Object.entries(analytics.statusCounts).map(([status, count]) => (
                     <div key={status} className="flex items-center justify-between">
                       <span className={`px-2 py-1 rounded text-xs ${getStatusColor(status)}`}>
                         {status}
                       </span>
-                      <span className="text-white">{count}</span>
+                      <span className={isDark ? 'text-white' : 'text-gray-900'}>{count}</span>
                     </div>
                   ))}
                 </div>
@@ -211,14 +213,14 @@ export default function SessionManagementPage() {
       )}
 
       {/* Filters */}
-      <div className="bg-slate-800 border border-slate-700 rounded-xl p-4">
+      <div className={`${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white/80 backdrop-blur-sm border-gray-200'} border rounded-xl p-4 shadow-xl`}>
         <div className="flex flex-wrap gap-4 items-end">
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-slate-300 mb-1">Filter by Status</label>
+            <label className={`block text-sm font-medium ${isDark ? 'text-slate-300' : 'text-gray-700'} mb-1`}>Filter by Status</label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`w-full px-3 py-2 ${isDark ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-300 text-gray-900'} border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
             >
               <option value="">All Sessions</option>
               <option value="scheduled">Scheduled</option>
@@ -229,7 +231,7 @@ export default function SessionManagementPage() {
           </div>
           <button
             onClick={() => setStatusFilter('')}
-            className="px-4 py-2 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition"
+            className={`px-4 py-2 ${isDark ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'} rounded-lg transition`}
           >
             Clear Filter
           </button>
@@ -237,37 +239,37 @@ export default function SessionManagementPage() {
       </div>
 
       {/* Sessions Table */}
-      <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-700">
-          <h2 className="text-lg font-semibold text-white">All Sessions ({total})</h2>
+      <div className={`${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white/80 backdrop-blur-sm border-gray-200'} border rounded-xl overflow-hidden shadow-xl`}>
+        <div className={`px-6 py-4 border-b ${isDark ? 'border-slate-700' : 'border-gray-200'}`}>
+          <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>All Sessions ({total})</h2>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-slate-700/50">
+            <thead className={isDark ? 'bg-slate-700/50' : 'bg-gray-50'}>
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase">Group</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase">Teacher</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase">Attendees</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase">Created</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase">Actions</th>
+                <th className={`px-6 py-3 text-left text-xs font-medium ${isDark ? 'text-slate-400' : 'text-gray-500'} uppercase`}>Group</th>
+                <th className={`px-6 py-3 text-left text-xs font-medium ${isDark ? 'text-slate-400' : 'text-gray-500'} uppercase`}>Teacher</th>
+                <th className={`px-6 py-3 text-left text-xs font-medium ${isDark ? 'text-slate-400' : 'text-gray-500'} uppercase`}>Status</th>
+                <th className={`px-6 py-3 text-left text-xs font-medium ${isDark ? 'text-slate-400' : 'text-gray-500'} uppercase`}>Attendees</th>
+                <th className={`px-6 py-3 text-left text-xs font-medium ${isDark ? 'text-slate-400' : 'text-gray-500'} uppercase`}>Created</th>
+                <th className={`px-6 py-3 text-left text-xs font-medium ${isDark ? 'text-slate-400' : 'text-gray-500'} uppercase`}>Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-700">
+            <tbody className={isDark ? 'divide-y divide-slate-700' : 'divide-y divide-gray-200'}>
               {sessions.map((session) => (
-                <tr key={session._id} className="hover:bg-slate-700/30">
+                <tr key={session._id} className={isDark ? 'hover:bg-slate-700/50' : 'hover:bg-gray-50'}>
                   <td className="px-6 py-4 text-sm">
                     {typeof session.groupId === 'object' && session.groupId ? (
                       <div>
-                        <div className="font-medium text-white">{session.groupId.subject}</div>
-                        <div className="text-xs text-slate-400">{session.groupId.topic}</div>
+                        <div className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>{session.groupId.subject}</div>
+                        <div className={`text-xs ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>{session.groupId.topic}</div>
                       </div>
                     ) : (
-                      <span className="text-slate-400">N/A</span>
+                      <span className={isDark ? 'text-slate-500' : 'text-gray-400'}>N/A</span>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-sm text-slate-300">
+                  <td className={`px-6 py-4 text-sm ${isDark ? 'text-slate-300' : 'text-gray-600'}`}>
                     {typeof session.teacherId === 'object' && session.teacherId
                       ? (session.teacherId.name || session.teacherId.email)
                       : 'N/A'}
@@ -277,10 +279,10 @@ export default function SessionManagementPage() {
                       {session.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-slate-300">
+                  <td className={`px-6 py-4 text-sm ${isDark ? 'text-slate-300' : 'text-gray-600'}`}>
                     {session.attendees?.length || 0}
                   </td>
-                  <td className="px-6 py-4 text-sm text-slate-400">
+                  <td className={`px-6 py-4 text-sm ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>
                     {new Date(session.createdAt).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 text-sm space-x-2">
@@ -304,7 +306,7 @@ export default function SessionManagementPage() {
         </div>
 
         {sessions.length === 0 && (
-          <div className="text-center py-12 text-slate-400">
+          <div className={`text-center py-12 ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>
             <span className="text-4xl mb-2 block">📅</span>
             <p>No sessions found</p>
           </div>
@@ -313,18 +315,18 @@ export default function SessionManagementPage() {
 
       {/* Session Detail Modal */}
       {selectedSession && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-          <div className="bg-slate-800 border border-slate-700 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 mx-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className={`${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'} border rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 mx-4 shadow-2xl`}>
             <div className="flex justify-between items-start mb-4">
               <div>
-                <h2 className="text-xl font-bold text-white">Session Details</h2>
+                <h2 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>Session Details</h2>
                 <span className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(selectedSession.status)}`}>
                   {selectedSession.status}
                 </span>
               </div>
               <button
                 onClick={() => setSelectedSession(null)}
-                className="text-slate-400 hover:text-white text-xl"
+                className={`${isDark ? 'text-slate-400 hover:text-slate-300' : 'text-gray-400 hover:text-gray-600'} text-xl`}
               >
                 ✕
               </button>
@@ -333,47 +335,47 @@ export default function SessionManagementPage() {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm font-medium text-slate-400">Group</p>
+                  <p className={`text-sm font-medium ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Group</p>
                   {typeof selectedSession.groupId === 'object' && selectedSession.groupId ? (
-                    <p className="text-white">{selectedSession.groupId.subject} - {selectedSession.groupId.topic}</p>
+                    <p className={isDark ? 'text-white' : 'text-gray-900'}>{selectedSession.groupId.subject} - {selectedSession.groupId.topic}</p>
                   ) : (
-                    <p className="text-slate-400">N/A</p>
+                    <p className={isDark ? 'text-slate-500' : 'text-gray-400'}>N/A</p>
                   )}
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-slate-400">Teacher</p>
-                  <p className="text-white">
+                  <p className={`text-sm font-medium ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Teacher</p>
+                  <p className={isDark ? 'text-white' : 'text-gray-900'}>
                     {typeof selectedSession.teacherId === 'object' && selectedSession.teacherId
                       ? (selectedSession.teacherId.name || selectedSession.teacherId.email)
                       : 'N/A'}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-slate-400">Created</p>
-                  <p className="text-white">{new Date(selectedSession.createdAt).toLocaleString()}</p>
+                  <p className={`text-sm font-medium ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Created</p>
+                  <p className={isDark ? 'text-white' : 'text-gray-900'}>{new Date(selectedSession.createdAt).toLocaleString()}</p>
                 </div>
                 {selectedSession.startedAt && (
                   <div>
-                    <p className="text-sm font-medium text-slate-400">Started</p>
-                    <p className="text-white">{new Date(selectedSession.startedAt).toLocaleString()}</p>
+                    <p className={`text-sm font-medium ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Started</p>
+                    <p className={isDark ? 'text-white' : 'text-gray-900'}>{new Date(selectedSession.startedAt).toLocaleString()}</p>
                   </div>
                 )}
                 {selectedSession.endedAt && (
                   <div>
-                    <p className="text-sm font-medium text-slate-400">Ended</p>
-                    <p className="text-white">{new Date(selectedSession.endedAt).toLocaleString()}</p>
+                    <p className={`text-sm font-medium ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Ended</p>
+                    <p className={isDark ? 'text-white' : 'text-gray-900'}>{new Date(selectedSession.endedAt).toLocaleString()}</p>
                   </div>
                 )}
               </div>
 
               {selectedSession.meetingLink && (
                 <div>
-                  <p className="text-sm font-medium text-slate-400">Meeting Link</p>
+                  <p className={`text-sm font-medium ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Meeting Link</p>
                   <a 
                     href={selectedSession.meetingLink} 
                     target="_blank" 
                     rel="noreferrer"
-                    className="text-blue-400 hover:underline break-all"
+                    className="text-blue-600 hover:underline break-all"
                   >
                     {selectedSession.meetingLink}
                   </a>
@@ -382,25 +384,25 @@ export default function SessionManagementPage() {
 
               {/* Attendees */}
               <div>
-                <h3 className="text-white font-medium mb-3">Attendees ({selectedSession.attendees?.length || 0})</h3>
+                <h3 className={`${isDark ? 'text-white' : 'text-gray-900'} font-medium mb-3`}>Attendees ({selectedSession.attendees?.length || 0})</h3>
                 {selectedSession.attendees && selectedSession.attendees.length > 0 ? (
-                  <div className="border border-slate-700 rounded-lg overflow-hidden">
+                  <div className={`border ${isDark ? 'border-slate-700' : 'border-gray-200'} rounded-lg overflow-hidden`}>
                     <table className="w-full">
-                      <thead className="bg-slate-700/50">
+                      <thead className={isDark ? 'bg-slate-700/50' : 'bg-gray-50'}>
                         <tr>
-                          <th className="px-4 py-2 text-left text-xs font-medium text-slate-400">User ID</th>
-                          <th className="px-4 py-2 text-left text-xs font-medium text-slate-400">Joined</th>
-                          <th className="px-4 py-2 text-left text-xs font-medium text-slate-400">Left</th>
+                          <th className={`px-4 py-2 text-left text-xs font-medium ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>User ID</th>
+                          <th className={`px-4 py-2 text-left text-xs font-medium ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Joined</th>
+                          <th className={`px-4 py-2 text-left text-xs font-medium ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Left</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-700">
+                      <tbody className={isDark ? 'divide-y divide-slate-700' : 'divide-y divide-gray-200'}>
                         {selectedSession.attendees.map((attendee, index) => (
-                          <tr key={index} className="hover:bg-slate-700/30">
-                            <td className="px-4 py-2 text-sm text-white font-mono">{attendee.userId}</td>
-                            <td className="px-4 py-2 text-sm text-slate-300">
+                          <tr key={index} className={isDark ? 'hover:bg-slate-700/50' : 'hover:bg-gray-50'}>
+                            <td className={`px-4 py-2 text-sm ${isDark ? 'text-white' : 'text-gray-900'} font-mono`}>{attendee.userId}</td>
+                            <td className={`px-4 py-2 text-sm ${isDark ? 'text-slate-300' : 'text-gray-600'}`}>
                               {new Date(attendee.joinedAt).toLocaleTimeString()}
                             </td>
-                            <td className="px-4 py-2 text-sm text-slate-300">
+                            <td className={`px-4 py-2 text-sm ${isDark ? 'text-slate-300' : 'text-gray-600'}`}>
                               {attendee.leftAt ? new Date(attendee.leftAt).toLocaleTimeString() : '-'}
                             </td>
                           </tr>
@@ -409,7 +411,7 @@ export default function SessionManagementPage() {
                     </table>
                   </div>
                 ) : (
-                  <p className="text-slate-400 text-sm">No attendees recorded</p>
+                  <p className={`${isDark ? 'text-slate-400' : 'text-gray-500'} text-sm`}>No attendees recorded</p>
                 )}
               </div>
             </div>
@@ -417,7 +419,7 @@ export default function SessionManagementPage() {
             <div className="flex justify-end gap-3 mt-6">
               <button
                 onClick={() => setSelectedSession(null)}
-                className="px-4 py-2 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition"
+                className={`px-4 py-2 ${isDark ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'} rounded-lg transition`}
               >
                 Close
               </button>

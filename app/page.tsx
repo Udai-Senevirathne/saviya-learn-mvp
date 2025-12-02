@@ -62,14 +62,8 @@ function useTypewriter(text: string, speed: number = 50, pauseDuration: number =
 // Animated Counter Hook
 function useCountUp(end: number, duration: number = 2000, startOnView: boolean = true) {
   const [count, setCount] = useState(0);
-  const [hasStarted, setHasStarted] = useState(false);
+  const [hasStarted, setHasStarted] = useState(!startOnView);
   const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!startOnView) {
-      setHasStarted(true);
-    }
-  }, [startOnView]);
 
   useEffect(() => {
     if (!startOnView) return;
@@ -139,6 +133,7 @@ function AnimatedCounter({ value, label, suffix = '+' }: { value: number; label:
 export default function LandingPage() {
   const router = useRouter();
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { t } = useLanguage();
   const heroTitle = t('landing.heroTitle');
   const { displayText, isTyping } = useTypewriter(heroTitle, 80, 2000);
@@ -152,9 +147,12 @@ export default function LandingPage() {
       } else {
         router.push('/home');
       }
+      return;
     }
-    // Trigger animations after mount
-    setIsLoaded(true);
+    // Trigger animations after mount with requestAnimationFrame
+    requestAnimationFrame(() => {
+      setIsLoaded(true);
+    });
   }, [router]);
 
   return (
@@ -163,11 +161,14 @@ export default function LandingPage() {
       <nav className={`bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 transition-all duration-500 ${isLoaded ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
+            {/* Logo */}
             <div className="flex items-center gap-2 group cursor-pointer">
-              <span className="text-3xl transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12"></span>
-              <span className="text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-300">{t('common.appName')}</span>
+              <span className="text-3xl transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12">📚</span>
+              <span className="text-xl sm:text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-300">{t('common.appName')}</span>
             </div>
-            <div className="flex items-center gap-4">
+
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-4">
               <LanguageSelector />
               <Link
                 href="/login"
@@ -178,6 +179,44 @@ export default function LandingPage() {
               <Link
                 href="/signup"
                 className="px-6 py-2 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition-all duration-300 shadow-lg shadow-blue-200 hover:shadow-xl hover:shadow-blue-300 hover:scale-105 btn-animate"
+              >
+                {t('landing.getStarted')}
+              </Link>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+          </div>
+
+          {/* Mobile Menu */}
+          <div className={`md:hidden overflow-hidden transition-all duration-300 ${isMobileMenuOpen ? 'max-h-64 pb-4' : 'max-h-0'}`}>
+            <div className="flex flex-col gap-3 pt-2 border-t border-gray-200">
+              <LanguageSelector />
+              <Link
+                href="/login"
+                className="px-4 py-2 text-gray-700 font-medium hover:text-blue-600 hover:bg-gray-50 rounded-lg transition-all duration-300"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {t('landing.signIn')}
+              </Link>
+              <Link
+                href="/signup"
+                className="px-4 py-2 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition-all duration-300 text-center"
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 {t('landing.getStarted')}
               </Link>
@@ -194,34 +233,35 @@ export default function LandingPage() {
         <div className="absolute bottom-20 left-1/3 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-float" style={{ animationDelay: '2s' }}></div>
 
         <div className="max-w-7xl mx-auto relative">
-          <div className="text-center max-w-4xl mx-auto">
-            <h1 className={`text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight transition-all duration-700 whitespace-nowrap ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-              {displayText.includes(',') ? (
-                <>
-                  {displayText.split(',')[0]},{' '}
-                  <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-indigo-600">
-                    {displayText.split(',')[1]}
-                  </span>
-                </>
-              ) : (
-                displayText
-              )}
-              <span className={`text-blue-600 ${isTyping ? 'animate-pulse' : 'animate-blink'}`}>|</span>
+          <div className="text-center max-w-4xl mx-auto px-4">
+            <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight transition-all duration-700 ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+              <span className="whitespace-nowrap">
+                {displayText.includes(',') ? (
+                  <>
+                    {displayText.split(',')[0]},{' '}
+                    <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-indigo-600">
+                      {displayText.split(',')[1]}
+                    </span>
+                  </>
+                ) : (
+                  displayText
+                )}
+                <span className={`text-blue-600 ${isTyping ? 'animate-pulse' : 'animate-blink'}`}>|</span>
+              </span>
             </h1>
-            <p className={`text-xl text-gray-600 mb-10 max-w-2xl mx-auto transition-all duration-700 delay-200 ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+            <p className={`text-base sm:text-lg md:text-xl text-gray-600 mb-10 max-w-2xl mx-auto transition-all duration-700 delay-200 px-4 ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
               <span className="italic">&ldquo;{t('landing.heroSubtitle')}&rdquo;</span>
-              <span className="block text-sm text-gray-500 mt-2">� Nelson Mandela</span>
             </p>
-            <div className={`flex flex-col sm:flex-row gap-4 justify-center transition-all duration-700 delay-300 ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+            <div className={`flex flex-col sm:flex-row gap-4 justify-center px-4 transition-all duration-700 delay-300 ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
               <Link
                 href="/signup"
-                className="px-8 py-4 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-all duration-300 shadow-lg shadow-blue-200 text-lg hover:shadow-xl hover:shadow-blue-300 hover:scale-105 hover:-translate-y-1 btn-animate"
+                className="px-6 sm:px-8 py-3 sm:py-4 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-all duration-300 shadow-lg shadow-blue-200 text-base sm:text-lg hover:shadow-xl hover:shadow-blue-300 hover:scale-105 hover:-translate-y-1 btn-animate"
               >
                 {t('landing.getStarted')}
               </Link>
               <Link
                 href="/login"
-                className="px-8 py-4 bg-white text-gray-700 font-semibold rounded-full hover:bg-gray-50 transition-all duration-300 border border-gray-200 text-lg hover:border-blue-300 hover:scale-105 hover:-translate-y-1"
+                className="px-6 sm:px-8 py-3 sm:py-4 bg-white text-gray-700 font-semibold rounded-full hover:bg-gray-50 transition-all duration-300 border border-gray-200 text-base sm:text-lg hover:border-blue-300 hover:scale-105 hover:-translate-y-1"
               >
                 {t('landing.signIn')}
               </Link>
@@ -252,9 +292,41 @@ export default function LandingPage() {
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { icon: '', title: t('landing.peerLearning'), desc: t('landing.peerLearningDesc'), gradient: 'from-blue-50 to-indigo-50', iconBg: 'bg-blue-100' },
-              { icon: '', title: t('landing.expertTutors'), desc: t('landing.expertTutorsDesc'), gradient: 'from-green-50 to-emerald-50', iconBg: 'bg-green-100' },
-              { icon: '', title: t('landing.flexibleSchedule'), desc: t('landing.flexibleScheduleDesc'), gradient: 'from-purple-50 to-violet-50', iconBg: 'bg-purple-100' },
+              { 
+                icon: (
+                  <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                ), 
+                title: t('landing.peerLearning'), 
+                desc: t('landing.peerLearningDesc'), 
+                gradient: 'from-blue-50 to-indigo-50', 
+                iconBg: 'bg-blue-100' 
+              },
+              { 
+                icon: (
+                  <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
+                  </svg>
+                ), 
+                title: t('landing.expertTutors'), 
+                desc: t('landing.expertTutorsDesc'), 
+                gradient: 'from-green-50 to-emerald-50', 
+                iconBg: 'bg-green-100' 
+              },
+              { 
+                icon: (
+                  <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                ), 
+                title: t('landing.flexibleSchedule'), 
+                desc: t('landing.flexibleScheduleDesc'), 
+                gradient: 'from-purple-50 to-violet-50', 
+                iconBg: 'bg-purple-100' 
+              },
             ].map((feature, index) => (
               <div 
                 key={index}
@@ -298,44 +370,86 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400 py-12 px-4">
+      <footer className="bg-gray-900 text-gray-400 py-16 px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4 group cursor-pointer">
-                <span className="text-2xl transition-transform duration-300 group-hover:scale-110"></span>
-                <span className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors duration-300">{t('common.appName')}</span>
+          {/* Main Footer Content */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+            {/* Brand Section */}
+            <div className="lg:col-span-1">
+              <div className="flex items-center gap-3 mb-6 group cursor-pointer">
+                <span className="text-3xl transition-transform duration-300 group-hover:scale-110">📚</span>
+                <span className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors duration-300">{t('common.appName')}</span>
               </div>
-              <p className="text-sm">
+              <p className="text-sm leading-relaxed text-gray-400">
                 {t('auth.brandingDescription')}
               </p>
             </div>
+
+            {/* Platform Links */}
             <div>
-              <h4 className="font-semibold text-white mb-4">Platform</h4>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/signup" className="hover:text-white transition-all duration-300 hover:translate-x-1 inline-block">{t('auth.signup')}</Link></li>
-                <li><Link href="/login" className="hover:text-white transition-all duration-300 hover:translate-x-1 inline-block">{t('auth.login')}</Link></li>
-                <li><Link href="/groups" className="hover:text-white transition-all duration-300 hover:translate-x-1 inline-block">{t('nav.groups')}</Link></li>
+              <h4 className="font-semibold text-white mb-6 text-lg">Platform</h4>
+              <ul className="space-y-3 text-sm">
+                <li>
+                  <Link href="/signup" className="hover:text-white transition-all duration-300 hover:translate-x-1 inline-block">
+                    {t('auth.signup')}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/login" className="hover:text-white transition-all duration-300 hover:translate-x-1 inline-block">
+                    {t('auth.login')}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/groups" className="hover:text-white transition-all duration-300 hover:translate-x-1 inline-block">
+                    {t('nav.groups')}
+                  </Link>
+                </li>
               </ul>
             </div>
+
+            {/* Help & Support */}
             <div>
-              <h4 className="font-semibold text-white mb-4">{t('help.title')}</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition-all duration-300 hover:translate-x-1 inline-block">{t('help.faq')}</a></li>
-                <li><a href="#" className="hover:text-white transition-all duration-300 hover:translate-x-1 inline-block">{t('help.contactUs')}</a></li>
+              <h4 className="font-semibold text-white mb-6 text-lg">{t('help.title')}</h4>
+              <ul className="space-y-3 text-sm">
+                <li>
+                  <a href="#" className="hover:text-white transition-all duration-300 hover:translate-x-1 inline-block">
+                    {t('help.faq')}
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-all duration-300 hover:translate-x-1 inline-block">
+                    {t('help.contactUs')}
+                  </a>
+                </li>
               </ul>
             </div>
+
+            {/* Legal */}
             <div>
-              <h4 className="font-semibold text-white mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition-all duration-300 hover:translate-x-1 inline-block">{t('auth.privacyPolicy')}</a></li>
-                <li><a href="#" className="hover:text-white transition-all duration-300 hover:translate-x-1 inline-block">{t('auth.termsOfService')}</a></li>
+              <h4 className="font-semibold text-white mb-6 text-lg">Legal</h4>
+              <ul className="space-y-3 text-sm">
+                <li>
+                  <a href="#" className="hover:text-white transition-all duration-300 hover:translate-x-1 inline-block">
+                    {t('auth.privacyPolicy')}
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-all duration-300 hover:translate-x-1 inline-block">
+                    {t('auth.termsOfService')}
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 pt-8 text-center text-sm">
-            <p>{t('common.copyright')}</p>
-            <p className="mt-2">Made with <span className="text-red-500 animate-pulse"></span> in Sri Lanka</p>
+
+          {/* Bottom Bar */}
+          <div className="border-t border-gray-800 pt-8">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <p className="text-sm">{t('common.copyright')}</p>
+              <p className="text-sm flex items-center gap-1">
+                Made in Sri Lanka
+              </p>
+            </div>
           </div>
         </div>
       </footer>

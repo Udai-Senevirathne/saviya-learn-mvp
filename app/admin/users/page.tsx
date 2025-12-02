@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { API_BASE_URL, getToken } from '@/lib/api';
+import { useAdminTheme } from '@/context';
 
 interface User {
   _id: string;
@@ -22,6 +23,7 @@ export default function UsersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const { isDark } = useAdminTheme();
 
   useEffect(() => {
     fetchUsers();
@@ -151,7 +153,7 @@ export default function UsersPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        <div className={`animate-spin rounded-full h-8 w-8 border-b-2 ${isDark ? 'border-blue-500' : 'border-blue-600'}`}></div>
       </div>
     );
   }
@@ -161,8 +163,8 @@ export default function UsersPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">User Management</h1>
-          <p className="text-slate-400">Manage all platform users</p>
+          <h1 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>User Management</h1>
+          <p className={isDark ? 'text-slate-400' : 'text-gray-600'}>Manage all platform users</p>
         </div>
         <div className="flex items-center gap-3">
           <input
@@ -170,7 +172,7 @@ export default function UsersPage() {
             placeholder="Search users..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDark ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-400' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400'}`}
           />
           <button
             onClick={fetchUsers}
@@ -188,37 +190,37 @@ export default function UsersPage() {
       )}
 
       {/* Users Table */}
-      <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-700">
-          <h2 className="text-lg font-semibold text-white">All Users ({filteredUsers.length})</h2>
+      <div className={`${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white/80 backdrop-blur-sm border-gray-200'} border rounded-xl overflow-hidden shadow-xl`}>
+        <div className={`px-6 py-4 border-b ${isDark ? 'border-slate-700' : 'border-gray-200'}`}>
+          <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>All Users ({filteredUsers.length})</h2>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-slate-700/50">
+            <thead className={isDark ? 'bg-slate-700/50' : 'bg-gray-50'}>
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase">Email</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase">Role</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase">Verified</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase">Location</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase">Quick Actions</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase">Actions</th>
+                <th className={`px-6 py-3 text-left text-xs font-medium uppercase ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Name</th>
+                <th className={`px-6 py-3 text-left text-xs font-medium uppercase ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Email</th>
+                <th className={`px-6 py-3 text-left text-xs font-medium uppercase ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Role</th>
+                <th className={`px-6 py-3 text-left text-xs font-medium uppercase ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Status</th>
+                <th className={`px-6 py-3 text-left text-xs font-medium uppercase ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Verified</th>
+                <th className={`px-6 py-3 text-left text-xs font-medium uppercase ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Location</th>
+                <th className={`px-6 py-3 text-left text-xs font-medium uppercase ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Quick Actions</th>
+                <th className={`px-6 py-3 text-left text-xs font-medium uppercase ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-700">
+            <tbody className={`divide-y ${isDark ? 'divide-slate-700' : 'divide-gray-200'}`}>
               {filteredUsers.map((user) => (
-                <tr key={user._id} className="hover:bg-slate-700/30">
-                  <td className="px-6 py-4 text-sm font-medium text-white">
+                <tr key={user._id} className={isDark ? 'hover:bg-slate-700/30' : 'hover:bg-gray-50'}>
+                  <td className={`px-6 py-4 text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
                     {user.profile?.name || 'N/A'}
                   </td>
-                  <td className="px-6 py-4 text-sm text-slate-300">{user.email}</td>
+                  <td className={`px-6 py-4 text-sm ${isDark ? 'text-slate-300' : 'text-gray-600'}`}>{user.email}</td>
                   <td className="px-6 py-4 text-sm">
                     <select
                       value={user.role}
                       onChange={(e) => handleChangeRole(user._id, e.target.value)}
-                      className="bg-slate-700 border border-slate-600 text-white rounded px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className={`border rounded px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDark ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
                     >
                       <option value="user">User</option>
                       <option value="admin">Admin</option>
@@ -236,12 +238,12 @@ export default function UsersPage() {
                   </td>
                   <td className="px-6 py-4 text-sm">
                     {user.emailVerified ? (
-                      <span className="text-green-400">✓ Verified</span>
+                      <span className="text-green-500">✓ Verified</span>
                     ) : (
-                      <span className="text-slate-500">Not verified</span>
+                      <span className={isDark ? 'text-slate-500' : 'text-gray-400'}>Not verified</span>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-sm text-slate-300">
+                  <td className={`px-6 py-4 text-sm ${isDark ? 'text-slate-300' : 'text-gray-600'}`}>
                     {user.profile?.country || 'N/A'}
                     {user.profile?.region && `, ${user.profile.region}`}
                   </td>
@@ -292,7 +294,7 @@ export default function UsersPage() {
         </div>
 
         {filteredUsers.length === 0 && (
-          <div className="text-center py-8 text-slate-400">
+          <div className={`text-center py-8 ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>
             <span className="text-4xl mb-2 block">👥</span>
             <p>No users found</p>
           </div>

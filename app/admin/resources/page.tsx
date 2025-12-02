@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { API_BASE_URL, getToken } from '@/lib/api';
+import { useAdminTheme } from '@/context';
 
 interface Resource {
   _id: string;
@@ -30,6 +31,7 @@ interface Group {
 }
 
 export default function ResourceManagementPage() {
+  const { isDark } = useAdminTheme();
   const [resources, setResources] = useState<Resource[]>([]);
   const [total, setTotal] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -157,8 +159,8 @@ export default function ResourceManagementPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Resource Management</h1>
-          <p className="text-slate-400">Manage educational resources by group</p>
+          <h1 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>Resource Management</h1>
+          <p className={isDark ? 'text-slate-400' : 'text-gray-600'}>Manage educational resources by group</p>
         </div>
       </div>
 
@@ -169,14 +171,14 @@ export default function ResourceManagementPage() {
       )}
 
       {/* Group Selection */}
-      <div className="bg-slate-800 border border-slate-700 rounded-xl p-4">
+      <div className={`${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white/80 backdrop-blur-sm border-gray-200'} border rounded-xl p-4 shadow-xl`}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-slate-300 mb-1">Select Group</label>
+            <label className={`block text-sm font-medium ${isDark ? 'text-slate-300' : 'text-gray-700'} mb-1`}>Select Group</label>
             <select
               value={selectedGroupId}
               onChange={(e) => setSelectedGroupId(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`w-full px-3 py-2 ${isDark ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-300 text-gray-900'} border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
             >
               <option value="">Choose a group...</option>
               {groups.map((group) => (
@@ -187,14 +189,14 @@ export default function ResourceManagementPage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Search</label>
+            <label className={`block text-sm font-medium ${isDark ? 'text-slate-300' : 'text-gray-700'} mb-1`}>Search</label>
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search resources..."
               disabled={!selectedGroupId}
-              className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+              className={`w-full px-3 py-2 ${isDark ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-400' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400'} border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50`}
             />
           </div>
         </div>
@@ -202,9 +204,9 @@ export default function ResourceManagementPage() {
 
       {/* Resources Grid */}
       {selectedGroupId ? (
-        <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-700 flex justify-between items-center">
-            <h2 className="text-lg font-semibold text-white">Resources ({total})</h2>
+        <div className={`${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white/80 backdrop-blur-sm border-gray-200'} border rounded-xl overflow-hidden shadow-xl`}>
+          <div className={`px-6 py-4 border-b ${isDark ? 'border-slate-700' : 'border-gray-200'} flex justify-between items-center`}>
+            <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>Resources ({total})</h2>
             <button
               onClick={fetchResources}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm"
@@ -218,7 +220,7 @@ export default function ResourceManagementPage() {
               {resources.map((resource) => (
                 <div
                   key={resource._id}
-                  className="bg-slate-700/50 border border-slate-600 rounded-lg p-4 hover:bg-slate-700 transition"
+                  className={`${isDark ? 'bg-slate-700/50 border-slate-600 hover:bg-slate-700' : 'bg-gray-50 border-gray-200 hover:bg-gray-100'} border rounded-lg p-4 transition`}
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-2">
@@ -227,26 +229,26 @@ export default function ResourceManagementPage() {
                          resource.type === 'document' ? '📄' : 
                          resource.type === 'link' ? '🔗' : '📁'}
                       </span>
-                      <span className="px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded text-xs">
+                      <span className={`px-2 py-0.5 ${isDark ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-100 text-blue-700'} rounded text-xs`}>
                         {resource.type}
                       </span>
                     </div>
-                    <span className="text-slate-400 text-xs">👁 {resource.views}</span>
+                    <span className={`${isDark ? 'text-slate-400' : 'text-gray-500'} text-xs`}>👁 {resource.views}</span>
                   </div>
 
-                  <h3 className="text-white font-medium mb-1 line-clamp-1">{resource.title}</h3>
+                  <h3 className={`${isDark ? 'text-white' : 'text-gray-900'} font-medium mb-1 line-clamp-1`}>{resource.title}</h3>
                   {resource.description && (
-                    <p className="text-slate-400 text-sm mb-3 line-clamp-2">{resource.description}</p>
+                    <p className={`${isDark ? 'text-slate-400' : 'text-gray-500'} text-sm mb-3 line-clamp-2`}>{resource.description}</p>
                   )}
 
-                  <div className="text-xs text-slate-500 mb-3">
+                  <div className={`text-xs ${isDark ? 'text-slate-500' : 'text-gray-400'} mb-3`}>
                     {new Date(resource.createdAt).toLocaleDateString()}
                   </div>
 
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleView(resource)}
-                      className="flex-1 px-3 py-1.5 bg-slate-600 text-white rounded text-xs hover:bg-slate-500 transition"
+                      className={`flex-1 px-3 py-1.5 ${isDark ? 'bg-slate-600 text-slate-300 hover:bg-slate-500' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} rounded text-xs transition`}
                     >
                       View
                     </button>
@@ -267,24 +269,24 @@ export default function ResourceManagementPage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12 text-slate-400">
+            <div className={`text-center py-12 ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>
               <span className="text-4xl mb-2 block">📭</span>
               <p>No resources found in this group</p>
             </div>
           )}
         </div>
       ) : (
-        <div className="bg-slate-800 border border-slate-700 rounded-xl p-12 text-center">
+        <div className={`${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white/80 backdrop-blur-sm border-gray-200'} border rounded-xl p-12 text-center shadow-xl`}>
           <span className="text-5xl mb-4 block">📚</span>
-          <h3 className="text-xl font-semibold text-white mb-2">Select a Group</h3>
-          <p className="text-slate-400">Choose a learning group above to view and manage its resources</p>
+          <h3 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Select a Group</h3>
+          <p className={isDark ? 'text-slate-400' : 'text-gray-600'}>Choose a learning group above to view and manage its resources</p>
         </div>
       )}
 
       {/* View Resource Modal */}
       {selectedResource && !showEditModal && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-          <div className="bg-slate-800 border border-slate-700 rounded-xl max-w-lg w-full p-6 mx-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className={`${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'} border rounded-xl max-w-lg w-full p-6 mx-4 shadow-2xl`}>
             <div className="flex justify-between items-start mb-4">
               <div className="flex items-center gap-3">
                 <span className="text-3xl">
@@ -293,15 +295,15 @@ export default function ResourceManagementPage() {
                    selectedResource.type === 'link' ? '🔗' : '📁'}
                 </span>
                 <div>
-                  <h2 className="text-xl font-bold text-white">{selectedResource.title}</h2>
-                  <span className="px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded text-xs">
+                  <h2 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{selectedResource.title}</h2>
+                  <span className={`px-2 py-0.5 ${isDark ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-100 text-blue-700'} rounded text-xs`}>
                     {selectedResource.type}
                   </span>
                 </div>
               </div>
               <button
                 onClick={() => setSelectedResource(null)}
-                className="text-slate-400 hover:text-white text-xl"
+                className={`${isDark ? 'text-slate-400 hover:text-slate-300' : 'text-gray-400 hover:text-gray-600'} text-xl`}
               >
                 ✕
               </button>
@@ -310,18 +312,18 @@ export default function ResourceManagementPage() {
             <div className="space-y-4">
               {selectedResource.description && (
                 <div>
-                  <p className="text-sm font-medium text-slate-400">Description</p>
-                  <p className="text-white">{selectedResource.description}</p>
+                  <p className={`text-sm font-medium ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Description</p>
+                  <p className={isDark ? 'text-white' : 'text-gray-900'}>{selectedResource.description}</p>
                 </div>
               )}
 
               <div>
-                <p className="text-sm font-medium text-slate-400">Link</p>
+                <p className={`text-sm font-medium ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Link</p>
                 <a 
                   href={selectedResource.link} 
                   target="_blank" 
                   rel="noreferrer"
-                  className="text-blue-400 hover:underline break-all"
+                  className="text-blue-600 hover:underline break-all"
                 >
                   {selectedResource.link}
                 </a>
@@ -329,12 +331,12 @@ export default function ResourceManagementPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm font-medium text-slate-400">Views</p>
-                  <p className="text-white">{selectedResource.views}</p>
+                  <p className={`text-sm font-medium ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Views</p>
+                  <p className={isDark ? 'text-white' : 'text-gray-900'}>{selectedResource.views}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-slate-400">Created</p>
-                  <p className="text-white">{new Date(selectedResource.createdAt).toLocaleString()}</p>
+                  <p className={`text-sm font-medium ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Created</p>
+                  <p className={isDark ? 'text-white' : 'text-gray-900'}>{new Date(selectedResource.createdAt).toLocaleString()}</p>
                 </div>
               </div>
             </div>
@@ -350,7 +352,7 @@ export default function ResourceManagementPage() {
               </a>
               <button
                 onClick={() => handleEdit(selectedResource)}
-                className="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition"
+                className={`px-4 py-2 ${isDark ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'} rounded-lg transition`}
               >
                 Edit
               </button>
@@ -361,13 +363,13 @@ export default function ResourceManagementPage() {
 
       {/* Edit Resource Modal */}
       {selectedResource && showEditModal && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-          <div className="bg-slate-800 border border-slate-700 rounded-xl max-w-lg w-full p-6 mx-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className={`${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'} border rounded-xl max-w-lg w-full p-6 mx-4 shadow-2xl`}>
             <div className="flex justify-between items-start mb-4">
-              <h2 className="text-xl font-bold text-white">Edit Resource</h2>
+              <h2 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>Edit Resource</h2>
               <button
                 onClick={() => { setShowEditModal(false); setSelectedResource(null); }}
-                className="text-slate-400 hover:text-white text-xl"
+                className={`${isDark ? 'text-slate-400 hover:text-slate-300' : 'text-gray-400 hover:text-gray-600'} text-xl`}
               >
                 ✕
               </button>
@@ -375,33 +377,33 @@ export default function ResourceManagementPage() {
 
             <form onSubmit={handleUpdateResource} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1">Title</label>
+                <label className={`block text-sm font-medium ${isDark ? 'text-slate-300' : 'text-gray-700'} mb-1`}>Title</label>
                 <input
                   type="text"
                   value={editForm.title}
                   onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className={`w-full px-3 py-2 ${isDark ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-300 text-gray-900'} border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1">Description</label>
+                <label className={`block text-sm font-medium ${isDark ? 'text-slate-300' : 'text-gray-700'} mb-1`}>Description</label>
                 <textarea
                   value={editForm.description}
                   onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
                   rows={3}
-                  className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className={`w-full px-3 py-2 ${isDark ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-300 text-gray-900'} border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1">Link</label>
+                <label className={`block text-sm font-medium ${isDark ? 'text-slate-300' : 'text-gray-700'} mb-1`}>Link</label>
                 <input
                   type="url"
                   value={editForm.link}
                   onChange={(e) => setEditForm({ ...editForm, link: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className={`w-full px-3 py-2 ${isDark ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-gray-300 text-gray-900'} border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
                   required
                 />
               </div>
@@ -410,7 +412,7 @@ export default function ResourceManagementPage() {
                 <button
                   type="button"
                   onClick={() => { setShowEditModal(false); setSelectedResource(null); }}
-                  className="px-4 py-2 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition"
+                  className={`px-4 py-2 ${isDark ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'} rounded-lg transition`}
                 >
                   Cancel
                 </button>

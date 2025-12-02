@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { API_BASE_URL, getToken } from '@/lib/api';
 import Link from 'next/link';
+import { useAdminTheme } from '@/context';
 
 interface DashboardStats {
   totalUsers: number;
@@ -21,6 +22,7 @@ interface DashboardStats {
 export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { isDark } = useAdminTheme();
 
   useEffect(() => {
     fetchStats();
@@ -91,7 +93,7 @@ export default function AdminDashboard() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        <div className={`animate-spin rounded-full h-8 w-8 border-b-2 ${isDark ? 'border-blue-500' : 'border-indigo-600'}`}></div>
       </div>
     );
   }
@@ -99,10 +101,10 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-6">
       {/* Welcome Banner */}
-      <div className="bg-linear-to-r from-blue-600 to-purple-600 rounded-2xl p-6 text-white">
+      <div className="bg-linear-to-r from-indigo-500 to-purple-600 rounded-2xl p-6 text-white shadow-xl">
         <h1 className="text-2xl font-bold mb-2">Welcome to Admin Dashboard</h1>
-        <p className="text-blue-100">
-          Monitor and manage your Saviya Learn platform from this central hub.
+        <p className="text-indigo-100">
+          Monitor and manage your SaviyaLearn platform from this central hub.
         </p>
       </div>
 
@@ -111,7 +113,7 @@ export default function AdminDashboard() {
         {statCards.map((stat) => (
           <div
             key={stat.title}
-            className={`${stat.bgColor} border border-slate-700 rounded-xl p-5`}
+            className={`${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white/80 backdrop-blur-sm border-gray-200'} border rounded-xl p-5 shadow-md hover:shadow-lg transition-all duration-300`}
           >
             <div className="flex items-center justify-between mb-3">
               <span className="text-2xl">{stat.icon}</span>
@@ -119,50 +121,50 @@ export default function AdminDashboard() {
                 className={`w-2 h-2 rounded-full bg-linear-to-r ${stat.color}`}
               ></div>
             </div>
-            <p className="text-3xl font-bold text-white">{stat.value}</p>
-            <p className="text-sm text-slate-400 mt-1">{stat.title}</p>
+            <p className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{stat.value}</p>
+            <p className={`text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>{stat.title}</p>
           </div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Quick Actions */}
-        <div className="bg-slate-800 border border-slate-700 rounded-xl p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Quick Actions</h3>
+        <div className={`${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white/80 backdrop-blur-sm border-gray-200'} border rounded-xl p-6 shadow-md`}>
+          <h3 className={`text-lg font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Quick Actions</h3>
           <div className="grid grid-cols-2 gap-3">
             {quickActions.map((action) => (
               <Link
                 key={action.name}
                 href={action.href}
-                className="flex flex-col items-center justify-center p-4 bg-slate-700/50 rounded-lg hover:bg-slate-700 transition group"
+                className={`flex flex-col items-center justify-center p-4 rounded-xl border border-transparent transition group ${isDark ? 'bg-slate-700 hover:bg-slate-600' : 'bg-gray-50 hover:bg-indigo-50 hover:border-indigo-200'}`}
               >
                 <span className="text-2xl mb-2 group-hover:scale-110 transition-transform">
                   {action.icon}
                 </span>
-                <span className="text-sm text-slate-300">{action.name}</span>
+                <span className={`text-sm font-medium ${isDark ? 'text-slate-200' : 'text-gray-700'}`}>{action.name}</span>
               </Link>
             ))}
           </div>
         </div>
 
         {/* Recent Activity */}
-        <div className="lg:col-span-2 bg-slate-800 border border-slate-700 rounded-xl p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Recent Activity</h3>
+        <div className={`lg:col-span-2 ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white/80 backdrop-blur-sm border-gray-200'} border rounded-xl p-6 shadow-md`}>
+          <h3 className={`text-lg font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Recent Activity</h3>
           {stats?.recentActivities && stats.recentActivities.length > 0 ? (
             <div className="space-y-3">
               {stats.recentActivities.slice(0, 5).map((activity) => (
                 <div
                   key={activity._id}
-                  className="flex items-center gap-4 p-3 bg-slate-700/30 rounded-lg"
+                  className={`flex items-center gap-4 p-3 rounded-xl transition ${isDark ? 'bg-slate-700 hover:bg-slate-600' : 'bg-gray-50 hover:bg-gray-100'}`}
                 >
-                  <div className="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center">
-                    <span className="text-blue-400">📌</span>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isDark ? 'bg-indigo-500/20' : 'bg-indigo-100'}`}>
+                    <span className={isDark ? 'text-indigo-400' : 'text-indigo-600'}>📌</span>
                   </div>
                   <div className="flex-1">
-                    <p className="text-white text-sm font-medium capitalize">
+                    <p className={`text-sm font-medium capitalize ${isDark ? 'text-white' : 'text-gray-900'}`}>
                       {activity.actionType.replace(/_/g, ' ')}
                     </p>
-                    <p className="text-xs text-slate-400">
+                    <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>
                       {new Date(activity.timestamp).toLocaleString()}
                     </p>
                   </div>
@@ -170,7 +172,7 @@ export default function AdminDashboard() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-8 text-slate-400">
+            <div className={`text-center py-8 ${isDark ? 'text-slate-400' : 'text-gray-400'}`}>
               <span className="text-4xl mb-2 block">📭</span>
               <p>No recent activity</p>
             </div>
@@ -179,35 +181,35 @@ export default function AdminDashboard() {
       </div>
 
       {/* Platform Status */}
-      <div className="bg-slate-800 border border-slate-700 rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-white mb-4">Platform Status</h3>
+      <div className={`${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white/80 backdrop-blur-sm border-gray-200'} border rounded-xl p-6 shadow-md`}>
+        <h3 className={`text-lg font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Platform Status</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="flex items-center gap-3">
+          <div className={`flex items-center gap-3 p-3 rounded-xl ${isDark ? 'bg-green-500/10' : 'bg-green-50'}`}>
             <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
             <div>
-              <p className="text-white text-sm font-medium">API Server</p>
-              <p className="text-xs text-green-400">Online</p>
+              <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>API Server</p>
+              <p className="text-xs text-green-600">Online</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className={`flex items-center gap-3 p-3 rounded-xl ${isDark ? 'bg-green-500/10' : 'bg-green-50'}`}>
             <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
             <div>
-              <p className="text-white text-sm font-medium">Database</p>
-              <p className="text-xs text-green-400">Connected</p>
+              <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>Database</p>
+              <p className="text-xs text-green-600">Connected</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className={`flex items-center gap-3 p-3 rounded-xl ${isDark ? 'bg-green-500/10' : 'bg-green-50'}`}>
             <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
             <div>
-              <p className="text-white text-sm font-medium">Socket Server</p>
-              <p className="text-xs text-green-400">Active</p>
+              <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>Socket Server</p>
+              <p className="text-xs text-green-600">Active</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className={`flex items-center gap-3 p-3 rounded-xl ${isDark ? 'bg-green-500/10' : 'bg-green-50'}`}>
             <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
             <div>
-              <p className="text-white text-sm font-medium">Email Service</p>
-              <p className="text-xs text-green-400">Operational</p>
+              <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>Email Service</p>
+              <p className="text-xs text-green-600">Operational</p>
             </div>
           </div>
         </div>

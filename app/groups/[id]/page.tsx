@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
@@ -406,7 +406,7 @@ export default function GroupDetailsPage() {
 
   return (
     <LanguageProvider>
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50">
       <Navigation user={user} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -415,16 +415,16 @@ export default function GroupDetailsPage() {
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
             <div className="flex-1">
               <div className="flex flex-wrap items-center gap-2 mb-4">
-                <span className="px-4 py-1.5 bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 text-sm font-bold rounded-full border border-blue-200">
+                <span className="px-4 py-1.5 bg-linear-to-r from-blue-100 to-blue-50 text-blue-700 text-sm font-bold rounded-full border border-blue-200">
                   📚 Grade {group.grade}
                 </span>
                 {group.groupType === 'private' && (
-                  <span className="px-4 py-1.5 bg-gradient-to-r from-purple-100 to-purple-50 text-purple-700 text-sm font-bold rounded-full border border-purple-200">
+                  <span className="px-4 py-1.5 bg-linear-to-r from-purple-100 to-purple-50 text-purple-700 text-sm font-bold rounded-full border border-purple-200">
                     🔒 Private
                   </span>
                 )}
                 {isMember && (
-                  <span className="px-4 py-1.5 bg-gradient-to-r from-green-100 to-green-50 text-green-700 text-sm font-bold rounded-full border border-green-200">
+                  <span className="px-4 py-1.5 bg-linear-to-r from-green-100 to-green-50 text-green-700 text-sm font-bold rounded-full border border-green-200">
                     {userRole === 'owner' ? '👑 Owner' : userRole === 'admin' ? '⭐ Admin' : '✓ Member'}
                   </span>
                 )}
@@ -483,14 +483,14 @@ export default function GroupDetailsPage() {
                       href={group.whatsappLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full lg:w-auto px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all shadow-lg hover:shadow-xl hover:scale-105 font-medium text-center"
+                      className="w-full lg:w-auto px-6 py-3 bg-linear-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all shadow-lg hover:shadow-xl hover:scale-105 font-medium text-center"
                     >
                       💬 WhatsApp Group
                     </a>
                   )}
                   <button
                     onClick={handleLeaveGroup}
-                    className="w-full lg:w-auto px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl hover:from-red-700 hover:to-red-800 transition-all shadow-lg hover:shadow-xl font-medium"
+                    className="w-full lg:w-auto px-6 py-3 bg-linear-to-r from-red-600 to-red-700 text-white rounded-xl hover:from-red-700 hover:to-red-800 transition-all shadow-lg hover:shadow-xl font-medium"
                   >
                     🚪 Leave Group
                   </button>
@@ -503,7 +503,7 @@ export default function GroupDetailsPage() {
                   className={`w-full lg:w-auto px-8 py-3 rounded-xl transition-all font-bold shadow-lg ${
                     memberCount >= group.maxMembers
                       ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 hover:shadow-xl hover:scale-105'
+                      : 'bg-linear-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 hover:shadow-xl hover:scale-105'
                   }`}
                 >
                   {memberCount >= group.maxMembers ? '❌ Group Full' : '➕ Join Group'}
@@ -612,9 +612,9 @@ function TabButton({ active, onClick, icon, label }: any) {
   return (
     <button
       onClick={onClick}
-      className={`flex-shrink-0 px-4 sm:px-6 py-3 sm:py-4 font-medium transition-all whitespace-nowrap rounded-lg ${
+      className={`shrink-0 px-4 sm:px-6 py-3 sm:py-4 font-medium transition-all whitespace-nowrap rounded-lg ${
         active
-          ? 'text-blue-600 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-500 shadow-md scale-105'
+          ? 'text-blue-600 bg-linear-to-r from-blue-50 to-indigo-50 border-2 border-blue-500 shadow-md scale-105'
           : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
       }`}
     >
@@ -638,7 +638,7 @@ function OverviewTab({ group, isMember }: { group: Group; isMember: boolean }) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-blue-50 rounded-lg p-6">
+        <div className="bg-blue-50 rounded-lg p-6 text-black">
           <h4 className="font-semibold text-gray-900 mb-3">Group Information</h4>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
@@ -664,7 +664,7 @@ function OverviewTab({ group, isMember }: { group: Group; isMember: boolean }) {
           </div>
         </div>
 
-        <div className="bg-green-50 rounded-lg p-6">
+        <div className="bg-green-50 rounded-lg p-6 text-black">
           <h4 className="font-semibold text-gray-900 mb-3">Group Stats</h4>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
@@ -711,8 +711,27 @@ function MembersTab({ members }: { members: Member[] }) {
     <div>
       <h3 className="text-lg font-semibold text-gray-900 mb-4">Group Members</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {members.map((member) => {
-          // Handle both populated and non-populated userId
+        {members.map((member, index) => {
+          // Handle null, string, and object userId cases
+          if (!member.userId) {
+            return (
+              <div key={`unknown-${index}`} className="bg-gray-50 rounded-lg p-4 flex items-center gap-3">
+                <div className="w-12 h-12 bg-gray-400 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                  ?
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-gray-900">Unknown User</div>
+                  <div className="text-xs text-gray-500">
+                    Joined {new Date(member.joinedAt).toLocaleDateString()}
+                  </div>
+                </div>
+                <span className={`px-2 py-1 text-xs font-semibold rounded ${roleColors[member.role as keyof typeof roleColors] || roleColors.member}`}>
+                  {member.role}
+                </span>
+              </div>
+            );
+          }
+          
           const memberUser = typeof member.userId === 'string' ? null : member.userId;
           const memberId = typeof member.userId === 'string' ? member.userId : member.userId._id;
           
@@ -786,7 +805,7 @@ function ChatTab({ messages, newMessage, setNewMessage, onSendMessage, isSending
                     >
                       ↩️
                     </button>
-                    <p className="whitespace-pre-wrap break-words">{msg.message}</p>
+                    <p className="whitespace-pre-wrap break-all">{msg.message}</p>
                     
                     {hasResource && msg.resourceId && (
                       <a
@@ -868,7 +887,7 @@ function ChatTab({ messages, newMessage, setNewMessage, onSendMessage, isSending
         <button
           type="button"
           onClick={onAttachResource}
-          className="p-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 rounded-xl hover:from-gray-200 hover:to-gray-300 transition-all shadow-md hover:shadow-lg active:scale-95"
+          className="p-3 bg-linear-to-r from-gray-100 to-gray-200 text-gray-700 rounded-xl hover:from-gray-200 hover:to-gray-300 transition-all shadow-md hover:shadow-lg active:scale-95"
           title="Attach Resource"
         >
           <span className="text-xl">📎</span>
@@ -887,7 +906,7 @@ function ChatTab({ messages, newMessage, setNewMessage, onSendMessage, isSending
         <button
           type="submit"
           disabled={isSending || !newMessage.trim()}
-          className="px-5 sm:px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95"
+          className="px-5 sm:px-6 py-3 bg-linear-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95"
         >
           <span className="hidden sm:inline">{isSending ? 'Sending...' : 'Send'}</span>
           <span className="sm:hidden text-xl">✉️</span>
@@ -1038,7 +1057,7 @@ function ResourcesTab({ groupId, user }: { groupId: string; user: any }) {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
+          className="w-full sm:w-auto px-6 py-3 bg-linear-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
         >
           <span className="text-xl">+</span>
           <span>Add Resource</span>
@@ -1049,7 +1068,7 @@ function ResourcesTab({ groupId, user }: { groupId: string; user: any }) {
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {sortedResources.map((resource: any) => (
-              <div key={resource._id} className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-5 border-2 border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all">
+              <div key={resource._id} className="bg-linear-to-br from-white to-gray-50 rounded-xl p-5 border-2 border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
                     <h4 className="font-bold text-gray-900 text-lg">{resource.title}</h4>
@@ -1057,7 +1076,7 @@ function ResourcesTab({ groupId, user }: { groupId: string; user: any }) {
                       <p className="text-sm text-gray-600 mt-2 line-clamp-2">{resource.description}</p>
                     )}
                   </div>
-                  <span className="text-3xl ml-2 flex-shrink-0">📄</span>
+                  <span className="text-3xl ml-2 shrink-0">📄</span>
                 </div>
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-4 gap-3">
                   <div className="text-xs text-gray-500 font-medium">
@@ -1066,14 +1085,14 @@ function ResourcesTab({ groupId, user }: { groupId: string; user: any }) {
                   <div className="flex gap-2 w-full sm:w-auto">
                     <button
                       onClick={() => handleViewResource(resource._id, resource.link)}
-                      className="flex-1 sm:flex-none px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-md hover:shadow-lg active:scale-95"
+                      className="flex-1 sm:flex-none px-4 py-2 bg-linear-to-r from-blue-600 to-blue-700 text-white text-sm font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-md hover:shadow-lg active:scale-95"
                     >
                       📖 Open
                     </button>
                     {(resource.uploadedBy === user?.id || resource.uploadedBy?._id === user?.id || user?.role === 'admin') && (
                       <button
                         onClick={() => handleDeleteResource(resource._id)}
-                        className="px-4 py-2 bg-gradient-to-r from-red-100 to-red-50 text-red-700 text-sm font-medium rounded-lg hover:from-red-200 hover:to-red-100 transition-all border border-red-200 active:scale-95"
+                        className="px-4 py-2 bg-linear-to-r from-red-100 to-red-50 text-red-700 text-sm font-medium rounded-lg hover:from-red-200 hover:to-red-100 transition-all border border-red-200 active:scale-95"
                       >
                         🗑️
                       </button>
@@ -1089,7 +1108,7 @@ function ResourcesTab({ groupId, user }: { groupId: string; user: any }) {
               <button
                 onClick={handleLoadMore}
                 disabled={loadingMore}
-                className="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+                className="px-8 py-3 bg-linear-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
               >
                 {loadingMore ? (
                   <span className="flex items-center gap-2 justify-center">
@@ -1148,7 +1167,7 @@ function AddResourceModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn overflow-y-auto">
       <div className="bg-white rounded-3xl shadow-2xl max-w-xl w-full my-auto max-h-[95vh] overflow-y-auto transform transition-all animate-slideUp">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-5 rounded-t-3xl flex justify-between items-center sticky top-0 z-10">
+        <div className="bg-linear-to-r from-blue-600 to-indigo-600 px-6 py-5 rounded-t-3xl flex justify-between items-center sticky top-0 z-10">
           <div>
             <h2 className="text-2xl font-bold text-white flex items-center gap-2">
               📚 Add Resource
@@ -1218,7 +1237,7 @@ function AddResourceModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-6 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all font-semibold text-base disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95"
+              className="flex-1 px-6 py-3.5 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all font-semibold text-base disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95"
             >
               {isSubmitting ? '⏳ Adding...' : '✅ Add Resource'}
             </button>
@@ -1418,7 +1437,7 @@ function SessionsTab({ groupId, user, isMember }: { groupId: string; user: any; 
         </div>
         <button
           onClick={() => setShowScheduleModal(true)}
-          className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all font-medium flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+          className="w-full sm:w-auto px-6 py-3 bg-linear-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all font-medium flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
         >
           <span className="text-xl">+</span>
           Schedule Session
@@ -1656,7 +1675,7 @@ function ScheduleSessionModal({ onClose, onSubmit }: any) {
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn overflow-y-auto">
       <div className="bg-white rounded-3xl shadow-2xl max-w-xl w-full my-auto max-h-[95vh] overflow-y-auto transform transition-all animate-slideUp">
         {/* Header */}
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-5 rounded-t-3xl flex justify-between items-center sticky top-0 z-10">
+        <div className="bg-linear-to-r from-indigo-600 to-purple-600 px-6 py-5 rounded-t-3xl flex justify-between items-center sticky top-0 z-10">
           <div>
             <h2 className="text-2xl font-bold text-white flex items-center gap-2">
               🎓 Schedule Session
@@ -1747,7 +1766,7 @@ function ScheduleSessionModal({ onClose, onSubmit }: any) {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-6 py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all font-semibold text-base disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95"
+              className="flex-1 px-6 py-3.5 bg-linear-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all font-semibold text-base disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95"
             >
               {isSubmitting ? '⏳ Scheduling...' : '✅ Schedule Session'}
             </button>
@@ -1857,7 +1876,7 @@ function EditSessionModal({ session, onClose, onSubmit }: any) {
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn overflow-y-auto">
       <div className="bg-white rounded-3xl shadow-2xl max-w-xl w-full my-auto max-h-[95vh] overflow-y-auto transform transition-all animate-slideUp">
         {/* Header */}
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-5 rounded-t-3xl flex justify-between items-center sticky top-0 z-10">
+        <div className="bg-linear-to-r from-indigo-600 to-purple-600 px-6 py-5 rounded-t-3xl flex justify-between items-center sticky top-0 z-10">
           <div>
             <h2 className="text-2xl font-bold text-white flex items-center gap-2">
               ✏️ Edit Session
@@ -1948,7 +1967,7 @@ function EditSessionModal({ session, onClose, onSubmit }: any) {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-6 py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all font-semibold text-base disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95"
+              className="flex-1 px-6 py-3.5 bg-linear-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all font-semibold text-base disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95"
             >
               {isSubmitting ? '⏳ Updating...' : '✅ Update Session'}
             </button>
@@ -1980,7 +1999,7 @@ function EditGroupModal({ group, onClose, onSubmit }: { group: Group; onClose: (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn overflow-y-auto">
       <div className="bg-white rounded-3xl shadow-2xl max-w-xl w-full my-auto max-h-[95vh] overflow-y-auto transform transition-all animate-slideUp">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-5 rounded-t-3xl flex justify-between items-center sticky top-0 z-10">
+        <div className="bg-linear-to-r from-blue-600 to-indigo-600 px-6 py-5 rounded-t-3xl flex justify-between items-center sticky top-0 z-10">
           <div>
             <h2 className="text-2xl font-bold text-white flex items-center gap-2">
               ⚙️ Edit Group Settings
@@ -2068,7 +2087,7 @@ function EditGroupModal({ group, onClose, onSubmit }: { group: Group; onClose: (
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-6 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all font-semibold text-base disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95"
+              className="flex-1 px-6 py-3.5 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all font-semibold text-base disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95"
             >
               {isSubmitting ? '⏳ Updating...' : '✅ Update Group'}
             </button>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import axios, { getUser, clearToken } from '@/lib/axios';
+import axios, { getUser } from '@/lib/axios';
 import Navigation from '@/components/Navigation';
 import { LanguageProvider } from '@/lib/LanguageContext';
 
@@ -122,8 +122,9 @@ export default function GroupsPage() {
       alert('Successfully joined the group!');
       fetchGroups();
       fetchMyGroups();
-    } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to join group');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      alert(error.response?.data?.message || 'Failed to join group');
     }
   };
 
@@ -134,8 +135,9 @@ export default function GroupsPage() {
       alert('Left the group');
       fetchMyGroups();
       fetchGroups();
-    } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to leave group');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      alert(error.response?.data?.message || 'Failed to leave group');
     }
   };
 
@@ -150,7 +152,7 @@ export default function GroupsPage() {
 
   if (isLoading && groups.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
@@ -158,7 +160,7 @@ export default function GroupsPage() {
 
   return (
     <LanguageProvider>
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50">
       <Navigation user={user} />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -180,7 +182,7 @@ export default function GroupsPage() {
         </div>        {/* Tabs and Search */}
         <div className="bg-white rounded-2xl shadow-lg mb-6 overflow-hidden">
           {/* Tabs */}
-          <div className="flex border-b bg-gradient-to-r from-blue-50 to-indigo-50">
+          <div className="flex border-b bg-linear-to-r from-blue-50 to-indigo-50">
             <button
               onClick={() => setActiveTab('explore')}
               className={`flex-1 px-4 sm:px-6 py-4 font-semibold transition-all ${
@@ -282,10 +284,10 @@ export default function GroupsPage() {
             ) : (
               <div className="col-span-3 text-center py-16 sm:py-20">
                 <div className="text-6xl sm:text-7xl mb-4 animate-bounce">📚</div>
-                <p className="text-gray-600 text-base sm:text-lg mb-4 font-medium">You haven't joined any groups yet</p>
+                <p className="text-gray-600 text-base sm:text-lg mb-4 font-medium">You haven&apos;t joined any groups yet</p>
                 <button
                   onClick={() => setActiveTab('explore')}
-                  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl active:scale-95 font-semibold text-base"
+                  className="px-6 py-3 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl active:scale-95 font-semibold text-base"
                 >
                   <span className="flex items-center gap-2">
                     <span>🌍</span>
@@ -303,7 +305,7 @@ export default function GroupsPage() {
             <button
               onClick={handleLoadMoreExplore}
               disabled={exploreLoading}
-              className="px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl active:scale-95 text-base w-full sm:w-auto"
+              className="px-8 py-3 sm:py-4 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl active:scale-95 text-base w-full sm:w-auto"
             >
               {exploreLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -325,7 +327,7 @@ export default function GroupsPage() {
             <button
               onClick={handleLoadMoreMyGroups}
               disabled={myGroupsLoading}
-              className="px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl active:scale-95 text-base w-full sm:w-auto"
+              className="px-8 py-3 sm:py-4 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl active:scale-95 text-base w-full sm:w-auto"
             >
               {myGroupsLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -345,7 +347,7 @@ export default function GroupsPage() {
       {/* Mobile Floating Action Button */}
       <button
         onClick={() => setShowCreateModal(true)}
-        className="sm:hidden fixed right-4 bottom-4 sm:right-6 sm:bottom-6 w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full shadow-2xl hover:shadow-blue-500/50 hover:from-blue-700 hover:to-indigo-700 transition-all hover:scale-110 active:scale-95 flex items-center justify-center z-50"
+        className="sm:hidden fixed right-4 bottom-4 sm:right-6 sm:bottom-6 w-14 h-14 sm:w-16 sm:h-16 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-full shadow-2xl hover:shadow-blue-500/50 hover:from-blue-700 hover:to-indigo-700 transition-all hover:scale-110 active:scale-95 flex items-center justify-center z-50"
         aria-label="Create Group"
       >
         <span className="text-3xl font-light">+</span>
@@ -388,16 +390,16 @@ function GroupCard({
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-2 mb-3">
-            <span className="px-3 py-1.5 bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 text-xs font-bold rounded-full border border-blue-200">
+            <span className="px-3 py-1.5 bg-linear-to-r from-blue-100 to-blue-50 text-blue-700 text-xs font-bold rounded-full border border-blue-200">
               📚 Grade {group.grade}
             </span>
             {group.groupType === 'private' && (
-              <span className="px-3 py-1.5 bg-gradient-to-r from-purple-100 to-purple-50 text-purple-700 text-xs font-bold rounded-full border border-purple-200">
+              <span className="px-3 py-1.5 bg-linear-to-r from-purple-100 to-purple-50 text-purple-700 text-xs font-bold rounded-full border border-purple-200">
                 🔒 Private
               </span>
             )}
             {isMember && (
-              <span className="px-3 py-1.5 bg-gradient-to-r from-green-100 to-green-50 text-green-700 text-xs font-bold rounded-full border border-green-200">
+              <span className="px-3 py-1.5 bg-linear-to-r from-green-100 to-green-50 text-green-700 text-xs font-bold rounded-full border border-green-200">
                 ✓ Joined
               </span>
             )}
@@ -427,7 +429,7 @@ function GroupCard({
       <div className="flex flex-col sm:flex-row gap-2">
         <button
           onClick={onViewDetails}
-          className="flex-1 px-4 py-3 bg-gradient-to-r from-gray-100 to-gray-50 text-gray-700 rounded-xl hover:from-gray-200 hover:to-gray-100 transition-all font-semibold border border-gray-200 text-center"
+          className="flex-1 px-4 py-3 bg-linear-to-r from-gray-100 to-gray-50 text-gray-700 rounded-xl hover:from-gray-200 hover:to-gray-100 transition-all font-semibold border border-gray-200 text-center"
         >
           View Details
         </button>
@@ -435,7 +437,7 @@ function GroupCard({
           onLeave && (
             <button
               onClick={onLeave}
-              className="px-4 py-3 bg-gradient-to-r from-red-100 to-red-50 text-red-700 rounded-xl hover:from-red-200 hover:to-red-100 transition-all font-semibold border border-red-200"
+              className="px-4 py-3 bg-linear-to-r from-red-100 to-red-50 text-red-700 rounded-xl hover:from-red-200 hover:to-red-100 transition-all font-semibold border border-red-200"
             >
               Leave
             </button>
@@ -448,7 +450,7 @@ function GroupCard({
               className={`px-4 py-3 rounded-xl transition-all font-semibold ${
                 isFull
                   ? 'bg-gray-200 text-gray-500 cursor-not-allowed border border-gray-300'
-                  : 'bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:from-blue-700 hover:to-blue-600 shadow-md hover:shadow-lg border border-blue-600'
+                  : 'bg-linear-to-r from-blue-600 to-blue-500 text-white hover:from-blue-700 hover:to-blue-600 shadow-md hover:shadow-lg border border-blue-600'
               }`}
             >
               Join
@@ -486,8 +488,9 @@ function CreateGroupModal({ onClose, onSuccess }: { onClose: () => void; onSucce
       });
       alert('Group created successfully!');
       onSuccess();
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to create group');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      setError(error.response?.data?.message || 'Failed to create group');
       setIsSubmitting(false);
     }
   };
@@ -496,7 +499,7 @@ function CreateGroupModal({ onClose, onSuccess }: { onClose: () => void; onSucce
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
       <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden animate-slideUp">
         {/* Gradient Header */}
-        <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-indigo-600 px-6 sm:px-8 py-6 flex justify-between items-center">
+        <div className="sticky top-0 bg-linear-to-r from-blue-600 to-indigo-600 px-6 sm:px-8 py-6 flex justify-between items-center">
           <div className="flex items-center gap-3">
             <span className="text-3xl">🎓</span>
             <h2 className="text-2xl sm:text-3xl font-bold text-white">Create Learning Group</h2>
@@ -607,7 +610,7 @@ function CreateGroupModal({ onClose, onSuccess }: { onClose: () => void; onSucce
                   type="radio"
                   value="public"
                   checked={formData.groupType === 'public'}
-                  onChange={(e) => setFormData({ ...formData, groupType: 'public' })}
+                  onChange={() => setFormData({ ...formData, groupType: 'public' })}
                   className="w-5 h-5 text-blue-600"
                 />
                 <div>
@@ -620,7 +623,7 @@ function CreateGroupModal({ onClose, onSuccess }: { onClose: () => void; onSucce
                   type="radio"
                   value="private"
                   checked={formData.groupType === 'private'}
-                  onChange={(e) => setFormData({ ...formData, groupType: 'private' })}
+                  onChange={() => setFormData({ ...formData, groupType: 'private' })}
                   className="w-5 h-5 text-blue-600"
                 />
                 <div>
@@ -642,7 +645,7 @@ function CreateGroupModal({ onClose, onSuccess }: { onClose: () => void; onSucce
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl active:scale-95 text-base"
+              className="flex-1 px-6 py-3 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl active:scale-95 text-base"
             >
               {isSubmitting ? (
                 <span className="flex items-center justify-center gap-2">

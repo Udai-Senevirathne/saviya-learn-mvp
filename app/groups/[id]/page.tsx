@@ -1,4 +1,5 @@
-﻿'use client';
+﻿/* eslint-disable @typescript-eslint/no-explicit-any */
+'use client';
 
 import { useEffect, useState, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
@@ -7,7 +8,7 @@ import { getSocket } from '@/lib/socket';
 import Navigation from '@/components/Navigation';
 import { LanguageProvider, useLanguage } from '@/lib/LanguageContext';
 import { useToast } from '@/context';
-import { Paperclip, Send, BookOpen, Lock, Crown, Star, Check, Users, User, Calendar, MessageSquare, LogOut, X, UserPlus, Edit2, Plus, CalendarClock, Link as LinkIcon, CircleDot, CheckCircle, XCircle, Trash2, Reply } from 'lucide-react';
+import { Paperclip, Send, BookOpen, Lightbulb, Link2,Library, ChevronDown, MessageCircle ,Lock, Crown, Star, Check, Users, User, Calendar, MessageSquare, LogOut, X, UserPlus, Edit2, Plus, CalendarClock, Link as LinkIcon, CircleDot, CheckCircle, XCircle, Trash2, Reply, FileText, Eye, Pencil, Settings, Share2, Video, MapPin, Clock, Globe, UserCheck, Search, ArrowDown, ExternalLink, AlertCircle, Info, Book, Download } from 'lucide-react';
 
 interface Member {
   userId: string | {
@@ -546,19 +547,19 @@ export default function GroupDetailsPage() {
                   <TabButton
                     active={activeTab === 'resources'}
                     onClick={() => setActiveTab('resources')}
-                    icon="📚"
+                    icon={<FileText className="w-5 h-5" />}
                     label="Resources"
                   />
                 <TabButton
                   active={activeTab === 'chat'}
                   onClick={() => setActiveTab('chat')}
-                  icon="💬"
+                  icon={<MessageSquare className="w-5 h-5" />}
                   label="Chat"
                 />
                 <TabButton
                   active={activeTab === 'sessions'}
                   onClick={() => setActiveTab('sessions')}
-                  icon="🎓"
+                  icon={<Video className="w-5 h-5" />}
                   label="Sessions"
                 />
               </>
@@ -566,13 +567,13 @@ export default function GroupDetailsPage() {
             <TabButton
               active={activeTab === 'overview'}
               onClick={() => setActiveTab('overview')}
-              icon="📋"
+              icon={<BookOpen className="w-5 h-5" />}
               label="Overview"
             />
             <TabButton
               active={activeTab === 'members'}
               onClick={() => setActiveTab('members')}
-              icon="👥"
+              icon={<Users className="w-5 h-5" />}
               label={`Members (${memberCount})`}
             />
           </div>
@@ -993,6 +994,9 @@ function ResourcesTab({ groupId, user }: { groupId: string; user: any }) {
   const [resources, setResources] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [editingResource, setEditingResource] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('newest'); // newest, oldest, a-z, z-a
   const [page, setPage] = useState(1);
@@ -1070,10 +1074,31 @@ function ResourcesTab({ groupId, user }: { groupId: string; user: any }) {
       await axios.delete(`/resources/${resourceId}`);
       setPage(1);
       fetchResources(1, false);
+      showToast('Resource deleted successfully', 'success');
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       showToast(err.response?.data?.message || 'Failed to delete resource', 'error');
     }
+  };
+
+  const handleEditResource = async (data: { title: string; description: string; link: string }) => {
+    if (!editingResource) return;
+    try {
+      await axios.put(`/resources/${editingResource._id}`, data);
+      setShowEditModal(false);
+      setEditingResource(null);
+      setPage(1);
+      fetchResources(1, false);
+      showToast('Resource updated successfully', 'success');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      showToast(err.response?.data?.message || 'Failed to update resource', 'error');
+    }
+  };
+
+  const openEditModal = (resource: any) => {
+    setEditingResource(resource);
+    setShowEditModal(true);
   };
 
   const filteredResources = resources.filter(r =>
@@ -1112,10 +1137,10 @@ function ResourcesTab({ groupId, user }: { groupId: string; user: any }) {
           <div className="flex-1">
             <input
               type="text"
-              placeholder="🔍 Search resources..."
+              placeholder="Search resources..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 shadow-sm"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 shadow-sm pl-10 relative"
             />
           </div>
           <select
@@ -1151,26 +1176,41 @@ function ResourcesTab({ groupId, user }: { groupId: string; user: any }) {
                       <p className="text-sm text-gray-600 mt-2 line-clamp-2">{resource.description}</p>
                     )}
                   </div>
-                  <span className="text-3xl ml-2 shrink-0">📄</span>
+                  <FileText className="w-8 h-8 text-blue-500 ml-2 shrink-0" />
                 </div>
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-4 gap-3">
-                  <div className="text-[13px] text-gray-500 font-medium">
-                    👁️ {resource.views || 0} views • 📅 {new Date(resource.createdAt).toLocaleDateString()}
+                  <div className="text-[13px] text-gray-500 font-medium flex items-center gap-3">
+                    <span className="flex items-center gap-1">
+                      <Eye className="w-4 h-4" /> {resource.views || 0} views
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Calendar className="w-4 h-4" /> {new Date(resource.createdAt).toLocaleDateString()}
+                    </span>
                   </div>
                   <div className="flex gap-2 w-full sm:w-auto">
                     <button
                       onClick={() => handleViewResource(resource._id, resource.link)}
-                      className="flex-1 sm:flex-none px-4 py-2 bg-linear-to-r from-blue-600 to-blue-700 text-white text-sm font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-md hover:shadow-lg active:scale-95"
+                      className="flex-1 sm:flex-none px-4 py-2 bg-linear-to-r from-blue-600 to-blue-700 text-white text-sm font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-md hover:shadow-lg active:scale-95 flex items-center gap-2"
                     >
-                      📖 Open
+                      <ExternalLink className="w-4 h-4" /> Open
                     </button>
                     {(resource.uploadedBy === user?.id || resource.uploadedBy?._id === user?.id || user?.role === 'admin') && (
-                      <button
-                        onClick={() => handleDeleteResource(resource._id)}
-                        className="px-4 py-2 bg-linear-to-r from-red-100 to-red-50 text-red-700 text-sm font-medium rounded-lg hover:from-red-200 hover:to-red-100 transition-all border border-red-200 active:scale-95"
-                      >
-                        🗑️
-                      </button>
+                      <>
+                        <button
+                          onClick={() => openEditModal(resource)}
+                          className="px-4 py-2 bg-linear-to-r from-green-100 to-green-50 text-green-700 text-sm font-medium rounded-lg hover:from-green-200 hover:to-green-100 transition-all border border-green-200 active:scale-95 flex items-center gap-1"
+                          title="Edit resource"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteResource(resource._id)}
+                          className="px-4 py-2 bg-linear-to-r from-red-100 to-red-50 text-red-700 text-sm font-medium rounded-lg hover:from-red-200 hover:to-red-100 transition-all border border-red-200 active:scale-95 flex items-center gap-1"
+                          title="Delete resource"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </>
                     )}
                   </div>
                 </div>
@@ -1191,7 +1231,9 @@ function ResourcesTab({ groupId, user }: { groupId: string; user: any }) {
                     Loading...
                   </span>
                 ) : (
-                  '⬇️ Load More Resources'
+                  <span className="flex items-center gap-2">
+                    <ChevronDown className="w-4 h-4" /> Load More Resources
+                  </span>
                 )}
               </button>
             </div>
@@ -1216,6 +1258,17 @@ function ResourcesTab({ groupId, user }: { groupId: string; user: any }) {
         <AddResourceModal
           onClose={() => setShowAddModal(false)}
           onSubmit={handleAddResource}
+        />
+      )}
+
+      {showEditModal && editingResource && (
+        <EditResourceModal
+          resource={editingResource}
+          onClose={() => {
+            setShowEditModal(false);
+            setEditingResource(null);
+          }}
+          onSubmit={handleEditResource}
         />
       )}
     </div>
@@ -1246,7 +1299,7 @@ function AddResourceModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
         <div className="bg-linear-to-r from-blue-600 to-indigo-600 px-6 py-5 rounded-t-3xl flex justify-between items-center sticky top-0 z-10">
           <div>
             <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-              📚 Add Resource
+              <Library className="w-6 h-6" /> Add Resource
             </h2>
             <p className="text-blue-100 text-sm mt-1">Share learning materials with your group</p>
           </div>
@@ -1261,8 +1314,8 @@ function AddResourceModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
 
         <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-5">
           <div>
-            <label className="block text-base font-semibold text-gray-900 mb-2">
-              📝 Resource Title <span className="text-red-500">*</span>
+            <label className="block text-base font-semibold text-gray-900 mb-2 flex items-center gap-2">
+              <FileText className="w-4 h-4" /> Resource Title <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -1275,7 +1328,7 @@ function AddResourceModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
           </div>
 
           <div>
-            <label className="block text-base font-semibold text-gray-900 mb-2">💬 Description (Optional)</label>
+            <label className="block text-base font-semibold text-gray-900 mb-2 flex items-center gap-2"><MessageCircle className="w-4 h-4" /> Description (Optional)</label>
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -1286,8 +1339,8 @@ function AddResourceModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
           </div>
 
           <div>
-            <label className="block text-base font-semibold text-gray-900 mb-2">
-              🔗 Resource Link <span className="text-red-500">*</span>
+            <label className="block text-base font-semibold text-gray-900 mb-2 flex items-center gap-2">
+              <Link2 className="w-4 h-4" /> Resource Link <span className="text-red-500">*</span>
             </label>
             <input
               type="url"
@@ -1297,8 +1350,8 @@ function AddResourceModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
               placeholder="https://drive.google.com/..."
               className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 text-base transition-all"
             />
-            <p className="text-sm text-gray-600 mt-2 bg-blue-50 p-3 rounded-lg border border-blue-100">
-              💡 <strong>Tip:</strong> Make sure your link is publicly accessible (Google Drive, Dropbox, OneDrive, etc.)
+            <p className="text-sm text-gray-600 mt-2 bg-blue-50 p-3 rounded-lg border border-blue-100 flex items-start gap-2">
+              <Lightbulb className="w-4 h-4 shrink-0 mt-0.5" /> <span><strong>Tip:</strong> Make sure your link is publicly accessible (Google Drive, Dropbox, OneDrive, etc.)</span>
             </p>
           </div>
 
@@ -1313,9 +1366,119 @@ function AddResourceModal({ onClose, onSubmit }: { onClose: () => void; onSubmit
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-6 py-3.5 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all font-semibold text-base disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95"
+              className="flex-1 px-6 py-3.5 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all font-semibold text-base disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95 flex items-center justify-center gap-2"
             >
-              {isSubmitting ? '⏳ Adding...' : '✅ Add Resource'}
+              {isSubmitting ? (
+                <><Clock className="w-4 h-4" /> Adding...</>
+              ) : (
+                <><Check className="w-4 h-4" /> Add Resource</>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// Edit Resource Modal
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function EditResourceModal({ resource, onClose, onSubmit }: { resource: any; onClose: () => void; onSubmit: (data: any) => void }) {
+  const [formData, setFormData] = useState({
+    title: resource.title || '',
+    description: resource.description || '',
+    link: resource.link || '',
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    await onSubmit(formData);
+    setIsSubmitting(false);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn overflow-y-auto">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-xl w-full my-auto max-h-[95vh] overflow-y-auto transform transition-all animate-slideUp">
+        {/* Header */}
+        <div className="bg-linear-to-r from-green-600 to-emerald-600 px-6 py-5 rounded-t-3xl flex justify-between items-center sticky top-0 z-10">
+          <div>
+            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+              <Pencil className="w-6 h-6" /> Edit Resource
+            </h2>
+            <p className="text-green-100 text-sm mt-1">Update resource details</p>
+          </div>
+          <button 
+            onClick={onClose} 
+            className="text-white hover:bg-white/20 rounded-full w-10 h-10 flex items-center justify-center transition-all text-2xl font-light"
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-5">
+          <div>
+            <label className="block text-base font-semibold text-gray-900 mb-2 flex items-center gap-2">
+              <FileText className="w-4 h-4" /> Resource Title <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              required
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              placeholder="e.g., Calculus Notes Chapter 3"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900 placeholder-gray-400 text-base transition-all"
+            />
+          </div>
+
+          <div>
+            <label className="block text-base font-semibold text-gray-900 mb-2 flex items-center gap-2"><MessageCircle className="w-4 h-4" /> Description (Optional)</label>
+            <textarea
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              placeholder="Brief description of the resource..."
+              rows={4}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900 placeholder-gray-400 text-base transition-all resize-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-base font-semibold text-gray-900 mb-2 flex items-center gap-2">
+              <Link2 className="w-4 h-4" /> Resource Link <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="url"
+              required
+              value={formData.link}
+              onChange={(e) => setFormData({ ...formData, link: e.target.value })}
+              placeholder="https://drive.google.com/..."
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900 placeholder-gray-400 text-base transition-all"
+            />
+            <p className="text-sm text-gray-600 mt-2 bg-green-50 p-3 rounded-lg border border-green-100 flex items-start gap-2">
+              <Lightbulb className="w-4 h-4 shrink-0 mt-0.5" /> <span><strong>Tip:</strong> Make sure your link is publicly accessible (Google Drive, Dropbox, OneDrive, etc.)</span>
+            </p>
+          </div>
+
+          <div className="flex gap-3 pt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 px-6 py-3.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-semibold text-base shadow-sm hover:shadow-md active:scale-95"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex-1 px-6 py-3.5 bg-linear-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all font-semibold text-base disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95 flex items-center justify-center gap-2"
+            >
+              {isSubmitting ? (
+                <><Clock className="w-4 h-4" /> Updating...</>
+              ) : (
+                <><Check className="w-4 h-4" /> Update Resource</>
+              )}
             </button>
           </div>
         </form>
@@ -1642,22 +1805,22 @@ function SessionCard({ session, isTeacher, isJoined, onJoin, onLeave, onStart, o
               {/* <StatusIcon status={session.status} />  */}
               {session.status.toUpperCase()}
             </span>
-            {isTeacher && <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">👨‍🏫 Teacher</span>}
+            {isTeacher && <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded flex items-center gap-1"><User className="w-3 h-3" /> Teacher</span>}
           </div>
           <div className="text-sm text-gray-600 space-y-1">
             <div className="flex items-center gap-2">
-              <span>🕐</span>
+              <Clock className="w-4 h-4" />
               <span>{scheduledDate.toLocaleString()}</span>
               {isPast && session.status === 'scheduled' && (
                 <span className="text-red-600 text-xs">(Past Due)</span>
               )}
             </div>
             <div className="flex items-center gap-2">
-              <span>⏱️</span>
+              <CalendarClock className="w-4 h-4" />
               <span>{session.duration} minutes</span>
             </div>
             <div className="flex items-center gap-2">
-              <span>👥</span>
+              <Users className="w-4 h-4" />
               <span>{session.attendees?.length || 0} attendees</span>
             </div>
           </div>
@@ -1671,7 +1834,7 @@ function SessionCard({ session, isTeacher, isJoined, onJoin, onLeave, onStart, o
               className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
               title="Edit Session"
             >
-              ✏️
+              <Pencil className="w-4 h-4" />
             </button>
             <button
               onClick={onDelete}
@@ -1798,7 +1961,7 @@ function ScheduleSessionModal({ onClose, onSubmit }: any) {
         <div className="bg-linear-to-r from-indigo-600 to-purple-600 px-6 py-5 rounded-t-3xl flex justify-between items-center sticky top-0 z-10">
           <div>
             <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-              🎓 Schedule Session
+              <CalendarClock className="w-6 h-6" /> Schedule Session
             </h2>
             <p className="text-indigo-100 text-sm mt-1">Plan a study session with your group</p>
           </div>
@@ -1870,8 +2033,8 @@ function ScheduleSessionModal({ onClose, onSubmit }: any) {
               placeholder="https://meet.google.com/..."
               className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 text-base transition-all"
             />
-            <p className="text-sm text-gray-600 mt-2 bg-purple-50 p-3 rounded-lg border border-purple-100">
-              💡 <strong>Tip:</strong> Add Google Meet, Zoom, or Teams link for online sessions
+            <p className="text-sm text-gray-600 mt-2 bg-purple-50 p-3 rounded-lg border border-purple-100 flex items-start gap-2">
+              <Lightbulb className="w-4 h-4 shrink-0 mt-0.5" /> <span><strong>Tip:</strong> Add Google Meet, Zoom, or Teams link for online sessions</span>
             </p>
           </div>
 
@@ -1886,9 +2049,13 @@ function ScheduleSessionModal({ onClose, onSubmit }: any) {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-6 py-3.5 bg-linear-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all font-semibold text-base disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95"
+              className="flex-1 px-6 py-3.5 bg-linear-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all font-semibold text-base disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95 flex items-center justify-center gap-2"
             >
-              {isSubmitting ? '⏳ Scheduling...' : '✅ Schedule Session'}
+              {isSubmitting ? (
+                <><Clock className="w-4 h-4" /> Scheduling...</>
+              ) : (
+                <><Check className="w-4 h-4" /> Schedule Session</>
+              )}
             </button>
           </div>
         </form>
@@ -1966,11 +2133,11 @@ function ResourcePickerModal({ resources, onClose, onSelect }: { resources: any[
                   <div className="flex items-start gap-3 sm:gap-4">
                     <div className="shrink-0 w-12 h-12 sm:w-14 sm:h-14 bg-linear-to-br from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center group-hover:from-blue-200 group-hover:to-indigo-200 transition-all">
                       {resource.type === 'video' ? (
-                        <span className="text-2xl sm:text-3xl">🎥</span>
+                        <Eye className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" />
                       ) : resource.type === 'document' ? (
-                        <span className="text-2xl sm:text-3xl">📄</span>
+                        <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" />
                       ) : (
-                        <span className="text-2xl sm:text-3xl">🔗</span>
+                        <Link2 className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -2067,7 +2234,7 @@ function EditSessionModal({ session, onClose, onSubmit }: any) {
         <div className="bg-linear-to-r from-indigo-600 to-purple-600 px-6 py-5 rounded-t-3xl flex justify-between items-center sticky top-0 z-10">
           <div>
             <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-              ✏️ Edit Session
+              <Pencil className="w-6 h-6" /> Edit Session
             </h2>
             <p className="text-indigo-100 text-sm mt-1">Update session details</p>
           </div>
@@ -2082,8 +2249,8 @@ function EditSessionModal({ session, onClose, onSubmit }: any) {
 
         <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-5">
           <div>
-            <label className="block text-base font-semibold text-gray-900 mb-2">
-              📝 Session Title <span className="text-red-500">*</span>
+            <label className="block text-base font-semibold text-gray-900 mb-2 flex items-center gap-2">
+              <FileText className="w-4 h-4" /> Session Title <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -2096,8 +2263,8 @@ function EditSessionModal({ session, onClose, onSubmit }: any) {
           </div>
 
           <div>
-            <label className="block text-base font-semibold text-gray-900 mb-2">
-              📅 Date & Time <span className="text-red-500">*</span>
+            <label className="block text-base font-semibold text-gray-900 mb-2 flex items-center gap-2">
+              <Calendar className="w-4 h-4" /> Date & Time <span className="text-red-500">*</span>
             </label>
             <input
               type="datetime-local"
@@ -2110,8 +2277,8 @@ function EditSessionModal({ session, onClose, onSubmit }: any) {
           </div>
 
           <div>
-            <label className="block text-base font-semibold text-gray-900 mb-2">
-              ⏱️ Duration <span className="text-red-500">*</span>
+            <label className="block text-base font-semibold text-gray-900 mb-2 flex items-center gap-2">
+              <CalendarClock className="w-4 h-4" /> Duration <span className="text-red-500">*</span>
             </label>
             <select
               required
@@ -2119,18 +2286,18 @@ function EditSessionModal({ session, onClose, onSubmit }: any) {
               onChange={(e) => setFormData({ ...formData, duration: parseInt(e.target.value) })}
               className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-900 text-base transition-all"
             >
-              <option value={30}>⏰ 30 minutes</option>
-              <option value={45}>⏰ 45 minutes</option>
-              <option value={60}>⏰ 1 hour</option>
-              <option value={90}>⏰ 1.5 hours</option>
-              <option value={120}>⏰ 2 hours</option>
-              <option value={180}>⏰ 3 hours</option>
+              <option value={30}>30 minutes</option>
+              <option value={45}>45 minutes</option>
+              <option value={60}>1 hour</option>
+              <option value={90}>1.5 hours</option>
+              <option value={120}>2 hours</option>
+              <option value={180}>3 hours</option>
             </select>
           </div>
 
           <div>
-            <label className="block text-base font-semibold text-gray-900 mb-2">
-              🎥 Meeting Link (Optional)
+            <label className="block text-base font-semibold text-gray-900 mb-2 flex items-center gap-2">
+              <LinkIcon className="w-4 h-4" /> Meeting Link (Optional)
             </label>
             <input
               type="url"
@@ -2139,8 +2306,8 @@ function EditSessionModal({ session, onClose, onSubmit }: any) {
               placeholder="https://meet.google.com/..."
               className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 text-base transition-all"
             />
-            <p className="text-sm text-gray-600 mt-2 bg-purple-50 p-3 rounded-lg border border-purple-100">
-              💡 <strong>Tip:</strong> Add Google Meet, Zoom, or Teams link for online sessions
+            <p className="text-sm text-gray-600 mt-2 bg-purple-50 p-3 rounded-lg border border-purple-100 flex items-start gap-2">
+              <Lightbulb className="w-4 h-4 shrink-0 mt-0.5" /> <span><strong>Tip:</strong> Add Google Meet, Zoom, or Teams link for online sessions</span>
             </p>
           </div>
 
@@ -2155,9 +2322,13 @@ function EditSessionModal({ session, onClose, onSubmit }: any) {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-6 py-3.5 bg-linear-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all font-semibold text-base disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95"
+              className="flex-1 px-6 py-3.5 bg-linear-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all font-semibold text-base disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95 flex items-center justify-center gap-2"
             >
-              {isSubmitting ? '⏳ Updating...' : '✅ Update Session'}
+              {isSubmitting ? (
+                <><Clock className="w-4 h-4" /> Updating...</>
+              ) : (
+                <><Check className="w-4 h-4" /> Update Session</>
+              )}
             </button>
           </div>
         </form>
@@ -2192,7 +2363,7 @@ function EditGroupModal({ group, onClose, onSubmit }: { group: Group; onClose: (
         <div className="bg-linear-to-r from-blue-600 to-indigo-600 px-6 py-5 rounded-t-3xl flex justify-between items-center sticky top-0 z-10">
           <div>
             <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-              ⚙️ Edit Group Settings
+              <Edit2 className="w-6 h-6" /> Edit Group Settings
             </h2>
             <p className="text-blue-100 text-sm mt-1">Update your group configuration</p>
           </div>
@@ -2207,8 +2378,8 @@ function EditGroupModal({ group, onClose, onSubmit }: { group: Group; onClose: (
 
         <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-5">
           <div>
-            <label className="block text-base font-semibold text-gray-900 mb-2">
-              📝 Description
+            <label className="block text-base font-semibold text-gray-900 mb-2 flex items-center gap-2">
+              <FileText className="w-4 h-4" /> Description
             </label>
             <textarea
               value={formData.description}
@@ -2220,8 +2391,8 @@ function EditGroupModal({ group, onClose, onSubmit }: { group: Group; onClose: (
           </div>
 
           <div>
-            <label className="block text-base font-semibold text-gray-900 mb-2">
-              💬 WhatsApp Group Link
+            <label className="block text-base font-semibold text-gray-900 mb-2 flex items-center gap-2">
+              <MessageCircle className="w-4 h-4" /> WhatsApp Group Link
             </label>
             <input
               type="url"
@@ -2230,39 +2401,39 @@ function EditGroupModal({ group, onClose, onSubmit }: { group: Group; onClose: (
               placeholder="https://chat.whatsapp.com/..."
               className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 text-base transition-all"
             />
-            <p className="text-sm text-gray-600 mt-2 bg-green-50 p-3 rounded-lg border border-green-100">
-              💡 <strong>Optional:</strong> Add a WhatsApp group link for external communication
+            <p className="text-sm text-gray-600 mt-2 bg-green-50 p-3 rounded-lg border border-green-100 flex items-start gap-2">
+              <Lightbulb className="w-4 h-4 shrink-0 mt-0.5" /> <span><strong>Optional:</strong> Add a WhatsApp group link for external communication</span>
             </p>
           </div>
 
           <div>
-            <label className="block text-base font-semibold text-gray-900 mb-2">
-              👥 Maximum Members
+            <label className="block text-base font-semibold text-gray-900 mb-2 flex items-center gap-2">
+              <Users className="w-4 h-4" /> Maximum Members
             </label>
             <select
               value={formData.maxMembers}
               onChange={(e) => setFormData({ ...formData, maxMembers: parseInt(e.target.value) })}
               className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 text-base transition-all"
             >
-              <option value={10}>👥 10 members</option>
-              <option value={20}>👥 20 members</option>
-              <option value={30}>👥 30 members</option>
-              <option value={50}>👥 50 members</option>
-              <option value={100}>👥 100 members</option>
+              <option value={10}>10 members</option>
+              <option value={20}>20 members</option>
+              <option value={30}>30 members</option>
+              <option value={50}>50 members</option>
+              <option value={100}>100 members</option>
             </select>
           </div>
 
           <div>
-            <label className="block text-base font-semibold text-gray-900 mb-2">
-              🔐 Group Type
+            <label className="block text-base font-semibold text-gray-900 mb-2 flex items-center gap-2">
+              <Eye className="w-4 h-4" /> Group Type
             </label>
             <select
               value={formData.groupType}
               onChange={(e) => setFormData({ ...formData, groupType: e.target.value as 'public' | 'private' })}
               className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 text-base transition-all"
             >
-              <option value="public">🌍 Public - Anyone can join</option>
-              <option value="private">🔒 Private - Invitation required</option>
+              <option value="public">Public - Anyone can join</option>
+              <option value="private">Private - Invitation required</option>
             </select>
           </div>
 
@@ -2277,9 +2448,13 @@ function EditGroupModal({ group, onClose, onSubmit }: { group: Group; onClose: (
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-6 py-3.5 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all font-semibold text-base disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95"
+              className="flex-1 px-6 py-3.5 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all font-semibold text-base disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl active:scale-95 flex items-center justify-center gap-2"
             >
-              {isSubmitting ? '⏳ Updating...' : '✅ Update Group'}
+              {isSubmitting ? (
+                <><Clock className="w-4 h-4" /> Updating...</>
+              ) : (
+                <><Check className="w-4 h-4" /> Update Group</>
+              )}
             </button>
           </div>
         </form>

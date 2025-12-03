@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -21,6 +22,7 @@ interface HomeStats {
     subject: string;
     topic: string;
     grade: string;
+    members : [];
     memberCount: number;
   }>;
   recentActivity: Array<{
@@ -290,7 +292,7 @@ export default function HomePage() {
                             {t('home.grade')} {group.grade}
                           </span>
                           <span className="text-xs text-gray-500 flex items-center gap-1">
-                            <Users className="w-3 h-3" /> {group.memberCount} {t('home.members')}
+                            <Users className="w-3 h-3" /> {(group.memberCount ?? group.members?.length ?? 0)} {t('home.members')}
                           </span>
                         </div>
                       </div>

@@ -316,44 +316,51 @@ function RequestCard({ request, currentUserId, onClick }: any) {
   };
 
   const isMyRequest = request.requesterId?._id === currentUserId || request.requesterId === currentUserId;
+  const requesterFirst = request.requesterId?.profile?.firstName || '';
+  const requesterLast = request.requesterId?.profile?.lastName || '';
+  const requesterName = `${requesterFirst} ${requesterLast}`.trim() || request.requesterId?.email || 'Unknown';
+  const initials = requesterName.split(' ').map((p: string) => p[0]).filter(Boolean).slice(0,2).join('').toUpperCase();
+
+  const formattedDate = request.createdAt ? new Date(request.createdAt).toLocaleDateString() : 'N/A';
 
   return (
     <div
       onClick={onClick}
-      className="bg-white rounded-lg p-6 border border-gray-200 hover:shadow-lg transition cursor-pointer"
+      className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-transform duration-200 cursor-pointer"
     >
-      <div className="flex items-start justify-between mb-3">
-        <h3 className="font-semibold text-gray-900 text-lg flex-1">{request.title}</h3>
-        {isMyRequest && <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded ml-2">You</span>}
-      </div>
-
-      <p className="text-sm text-gray-600 mb-4 line-clamp-2">{request.description}</p>
-
-      <div className="flex flex-wrap gap-2 mb-4">
-        <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
-          {request.subject}
-        </span>
-        <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
-          {request.topic}
-        </span>
-        <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
-          {request.type}
-        </span>
-      </div>
-
-      <div className="flex items-center justify-between text-xs text-gray-500">
-        <div>
-          <span className={`px-2 py-1 rounded font-medium ${statusColors[(request.status || 'open') as keyof typeof statusColors]}`}>
-            {(request.status || 'open').toUpperCase()}
-          </span>
+      <div className="flex items-start gap-4 mb-3">
+        <div className="flex-shrink-0">
+          <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-semibold">{initials}</div>
         </div>
-        <div>
-          {request.responses?.length || 0} response{request.responses?.length !== 1 ? 's' : ''}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">{request.title}</h3>
+              <p className="text-xs text-gray-500 mt-1 truncate">{request.description}</p>
+            </div>
+            <div className="text-right">
+              {isMyRequest && <span className="inline-block text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">You</span>}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 mt-3 flex-wrap">
+            <span className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full">{request.subject}</span>
+            <span className="text-xs bg-gray-50 text-gray-700 px-2 py-1 rounded-full">{request.topic}</span>
+            <span className="text-xs bg-amber-50 text-amber-700 px-2 py-1 rounded-full">{request.type}</span>
+          </div>
         </div>
       </div>
 
-      <div className="mt-3 pt-3 border-t text-xs text-gray-500">
-        {request.createdAt ? new Date(request.createdAt).toLocaleDateString() : 'N/A'}
+      <div className="flex items-center justify-between mt-4 pt-3 border-t">
+        <div className="flex items-center gap-3 text-xs text-gray-500">
+          <span className={`px-2 py-1 rounded font-medium ${statusColors[(request.status || 'open') as keyof typeof statusColors]}`}>{(request.status || 'open').toUpperCase()}</span>
+          <div className="flex items-center gap-1 text-sm text-gray-600">
+            <FileText className="w-4 h-4 text-gray-400" />
+            <span>{request.responses?.length || 0}</span>
+          </div>
+        </div>
+
+        <div className="text-xs text-gray-400">{formattedDate}</div>
       </div>
     </div>
   );

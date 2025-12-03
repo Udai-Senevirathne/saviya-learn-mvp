@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { API_BASE_URL, getToken } from '@/lib/api';
 import Link from 'next/link';
 import { useAdminTheme, useAdminToast } from '@/context';
+import { useRouter} from 'next/navigation';
+
 
 interface DashboardStats {
   totalUsers: number;
@@ -19,13 +21,19 @@ interface DashboardStats {
   }>;
 }
 
+
+
 export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { isDark } = useAdminTheme();
   const { showToast } = useAdminToast();
-
+  const  router  = useRouter()
+  
   useEffect(() => {
+    if(localStorage.getItem("accessToken") == null || localStorage.getItem("accessToken") === undefined) {
+      router.push("/login");
+    }
     fetchStats();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

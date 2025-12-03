@@ -60,15 +60,30 @@ export default function NotificationBell({ userId }: { userId: string }) {
     // Listen for new notifications
     socket.on('new-notification', (notification: Notification) => {
       console.log('📬 New notification received:', notification);
-      setNotifications(prev => [notification, ...prev]);
+      setNotifications(prev => {
+        // Deduplicate by _id to avoid multiple inserts and re-renders
+        if (!notification || !notification._id) return prev;
+        const exists = prev.some(n => n._id === notification._id);
+        if (exists) return prev;
+        const next = [notification, ...prev];
+        // keep a reasonable cap to avoid unbounded growth
+        return next.slice(0, 50);
+      });
       setUnreadCount(prev => prev + 1);
-      
+
       // Optional: Show browser notification
-      if (Notification.permission === 'granted') {
-        new Notification(notification.title, {
-          body: notification.message,
-          icon: '/favicon.ico',
-        });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (typeof window !== 'undefined' && (window as any).Notification && (window as any).Notification.permission === 'granted') {
+        try {
+           // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          new (window as any).Notification(notification.title, {
+            body: notification.message,
+            icon: '/favicon.ico',
+          });
+        } catch (e) {
+          // ignore notification failures
+          console.debug('Browser notification failed', e);
+        }
       }
     });
 
@@ -77,7 +92,8 @@ export default function NotificationBell({ userId }: { userId: string }) {
 
   const fetchNotifications = async () => {
     try {
-      const response = await axios.get('/notifications?limit=20');
+      // fetch a small number for the bell dropdown to avoid heavy payloads
+      const response = await axios.get('/notifications?limit=5');
       setNotifications(response.data.notifications || []);
     } catch (err) {
       console.error('Failed to fetch notifications:', err);
@@ -204,7 +220,7 @@ export default function NotificationBell({ userId }: { userId: string }) {
             )}
           </div>
 
-          {/* Notifications List */}
+          {/* Notifications List (show top 5) */}
           <div className="overflow-y-auto max-h-[500px]">
             {notifications.length === 0 ? (
               <div className="py-12 text-center text-gray-500">
@@ -213,7 +229,7 @@ export default function NotificationBell({ userId }: { userId: string }) {
               </div>
             ) : (
               <div className="divide-y divide-gray-100">
-                {notifications.map((notification) => (
+                {notifications.slice(0, 5).map((notification) => (
                   <div
                     key={notification._id}
                     onClick={() => handleNotificationClick(notification)}

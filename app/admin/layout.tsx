@@ -23,6 +23,7 @@ const navItems = [
   { name: 'Groups', href: '/admin/groups', icon: '📚' },
   { name: 'Resources', href: '/admin/resources', icon: '📖' },
   { name: 'Sessions', href: '/admin/sessions', icon: '🎓' },
+  { name: 'Feedback', href: '/admin/feedback', icon: '📝' },
 ];
 
 function AdminLayoutContent({ children }: { children: React.ReactNode }) {

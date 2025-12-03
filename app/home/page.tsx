@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import axios, { getUser, clearToken } from '@/lib/axios';
 import { useLanguage } from '@/lib/LanguageContext';
 import { LanguageProvider } from '@/context/LanguageContext';
+import { useToast } from '@/context';
 import Navigation from '@/components/Navigation';
 import { Users, BookOpen, TrendingUp, Zap, FileText, Search, PlusCircle, HelpCircle, Calendar, Trophy, Award, Target, MessageSquare, LogOut as LogOutIcon } from 'lucide-react';
 
@@ -145,6 +146,52 @@ export default function HomePage() {
   const handleLogout = () => {
     clearToken();
     router.push('/');
+  };
+
+  // Feedback modal state
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [fbMessage, setFbMessage] = useState('');
+  const [fbEmail, setFbEmail] = useState(user?.email || '');
+  const [fbName, setFbName] = useState(user?.profile?.name || '');
+  const [fbRating, setFbRating] = useState<number | ''>('');
+  const [fbType, setFbType] = useState('general');
+  const [fbLoading, setFbLoading] = useState(false);
+  const { showToast } = useToast();
+
+  const resetFeedbackForm = () => {
+    setFbMessage('');
+    setFbRating('');
+    setFbType('general');
+    setFbEmail(user?.email || '');
+    setFbName(user?.profile?.name || '');
+  };
+
+  const submitFeedback = async () => {
+    if (!fbMessage || fbMessage.trim().length < 5) {
+      showToast(t('feedback.errors.messageRequired') || 'Please enter a feedback message (min 5 chars).', 'warning');
+      return;
+    }
+    setFbLoading(true);
+    try {
+      const payload: any = { message: fbMessage, type: fbType };
+      if (fbRating) payload.rating = fbRating;
+      if (fbEmail) payload.email = fbEmail;
+      if (fbName) payload.name = fbName;
+
+      const res = await axios.post('/feedback', payload);
+      if (res && res.status === 201) {
+        showToast('Feedback submitted. Thank you!', 'success');
+        resetFeedbackForm();
+        setShowFeedback(false);
+      } else {
+        showToast('Failed to submit feedback.', 'error');
+      }
+    } catch (err: any) {
+      console.error('Feedback submit error', err?.response || err);
+      showToast((err?.response?.data?.message) || ('Failed to submit feedback.'), 'error');
+    } finally {
+      setFbLoading(false);
+    }
   };
 
   
@@ -310,7 +357,7 @@ export default function HomePage() {
           <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6 flex items-center gap-2">
             <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500" /> {t('home.quickActions')}
           </h2>
-          <div className="grid grid-cols-3 gap-2 sm:gap-4">
+          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-4">
             <button onClick={() => router.push('/groups')} className="p-3 sm:p-6 border-2 border-dashed border-gray-300 rounded-xl hover:border-blue-500 hover:bg-blue-50/50 transition-all duration-300 group hover:scale-105 hover:shadow-lg">
               <Search className="w-6 h-6 sm:w-10 sm:h-10 text-blue-500 mb-1 sm:mb-3 mx-auto group-hover:scale-125 transition-transform duration-300" />
               <div className="text-xs sm:text-sm font-medium text-gray-700 group-hover:text-blue-600 transition-colors text-center">{t('home.actions.exploreGroups')}</div>
@@ -322,6 +369,12 @@ export default function HomePage() {
             <button onClick={() => router.push('/help')} className="p-3 sm:p-6 border-2 border-dashed border-gray-300 rounded-xl hover:border-purple-500 hover:bg-purple-50/50 transition-all duration-300 group hover:scale-105 hover:shadow-lg">
               <HelpCircle className="w-6 h-6 sm:w-10 sm:h-10 text-purple-500 mb-1 sm:mb-3 mx-auto group-hover:scale-125 transition-transform duration-300" />
               <div className="text-xs sm:text-sm font-medium text-gray-700 group-hover:text-purple-600 transition-colors text-center">{t('home.actions.getHelp')}</div>
+            </button>
+
+            {/* Feedback Action */}
+            <button onClick={() => setShowFeedback(true)} className="p-3 sm:p-6 border-2 border-dashed border-gray-300 rounded-xl hover:border-blue-600 hover:bg-blue-50/50 transition-all duration-300 group hover:scale-105 hover:shadow-lg">
+              <MessageSquare className="w-6 h-6 sm:w-10 sm:h-10 text-blue-600 mb-1 sm:mb-3 mx-auto group-hover:scale-125 transition-transform duration-300" />
+              <div className="text-xs sm:text-sm font-medium text-gray-700 group-hover:text-blue-600 transition-colors text-center">{'Send Feedback'}</div>
             </button>
           </div>
         </div>
@@ -356,6 +409,51 @@ export default function HomePage() {
           </div>
         )}
       </main>
+      {/* Feedback Modal */}
+      {showFeedback && (
+        <div className="fixed text-black inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setShowFeedback(false)} />
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 relative z-10 max-h-[90vh] overflow-auto">
+            <div className="p-4 bg-linear-to-r from-blue-600 via-indigo-600 to-purple-600 text-white flex items-center justify-between">
+              <h3 className="text-lg font-semibold">
+                {"Feedback From"}
+              </h3>
+              <button onClick={() => setShowFeedback(false)} className="text-white opacity-90 hover:opacity-100">✕</button>
+            </div>
+            <div className="p-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <input value={fbName} onChange={(e) => setFbName(e.target.value)} placeholder={'Your name'} className="w-full border border-gray-200 rounded-xl px-4 py-2 text-black placeholder-black/70" />
+                <input value={fbEmail} onChange={(e) => setFbEmail(e.target.value)} placeholder={'Email'} className="w-full border border-gray-200 rounded-xl px-4 py-2 text-black placeholder-black/70" />
+              </div>
+              <div className="mb-4 ">
+                <select value={fbType} onChange={(e) => setFbType(e.target.value)} className="w-full border border-gray-200 rounded-xl px-4 py-2 mb-3 text-black">
+                  <option value="general">{'General'}</option>
+                  <option value="bug">{'Bug'}</option>
+                  <option value="feature">{'Feature'}</option>
+                </select>
+                <textarea value={fbMessage} onChange={(e) => setFbMessage(e.target.value)} rows={6} placeholder={'Describe your feedback...'} className="w-full border border-gray-200 rounded-2xl px-4 py-3 resize-none text-black placeholder-black/70" />
+              </div>
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  <label className="text-sm text-gray-600">{'Rating'}</label>
+                  <select value={fbRating as any} onChange={(e) => setFbRating(e.target.value ? Number(e.target.value) : '')} className="border border-gray-200 rounded-xl px-3 py-1">
+                    <option value="">{'No rating'}</option>
+                    <option value="5">5</option>
+                    <option value="4">4</option>
+                    <option value="3">3</option>
+                    <option value="2">2</option>
+                    <option value="1">1</option>
+                  </select>
+                </div>
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <button onClick={() => { resetFeedbackForm(); setShowFeedback(false); }} className="w-full sm:w-auto px-4 py-2 rounded-xl border border-gray-200 text-gray-700">{t('common.cancel') || 'Cancel'}</button>
+                    <button onClick={submitFeedback} disabled={fbLoading} className="w-full sm:w-auto px-4 py-2 rounded-xl bg-linear-to-r from-blue-600 to-indigo-600 text-white hover:opacity-95 disabled:opacity-60">{fbLoading ? ('Sending...') : 'Send Feedback'}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
     </LanguageProvider>
   );

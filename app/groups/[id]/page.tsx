@@ -785,6 +785,32 @@ function MembersTab({ members }: { members: Member[] }) {
   );
 }
 
+// Helper function to parse URLs and render clickable links
+function renderMessageWithLinks(text: string, isOwn: boolean) {
+  // URL regex pattern that matches http, https, and www URLs
+  const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/gi;
+  const parts = text.split(urlRegex);
+  
+  return parts.map((part, index) => {
+    if (part.match(urlRegex)) {
+      const href = part.startsWith('www.') ? `https://${part}` : part;
+      return (
+        <a
+          key={index}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`underline hover:opacity-80 transition-opacity break-all ${isOwn ? 'text-blue-100 hover:text-white' : 'text-blue-600 hover:text-blue-800'}`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+}
+
 // Chat Tab
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ChatTab({ messages, newMessage, setNewMessage, onSendMessage, isSending, currentUserId, chatEndRef, onAttachResource, showResourcePicker, setShowResourcePicker, groupResources, onSelectResource, replyingTo, setReplyingTo, typingUsers, onTyping }: any) {
@@ -842,7 +868,7 @@ function ChatTab({ messages, newMessage, setNewMessage, onSendMessage, isSending
                         <Reply className="w-3.5 h-3.5 text-black" />
                       </button>
                     )}
-                    <p className="whitespace-pre-wrap break-all">{msg.message}</p>
+                    <p className="whitespace-pre-wrap break-all">{renderMessageWithLinks(msg.message, isOwn)}</p>
                     
                     {hasResource && msg.resourceId && (
                       <a

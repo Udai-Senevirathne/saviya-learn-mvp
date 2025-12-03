@@ -95,7 +95,7 @@ export default function GroupDetailsPage() {
   // Set default tab to 'chat' for members
   useEffect(() => {
     if (group && isUserMember()) {
-      setActiveTab('chat');
+      setActiveTab('resources');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [group]);

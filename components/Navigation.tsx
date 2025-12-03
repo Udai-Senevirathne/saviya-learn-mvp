@@ -22,7 +22,7 @@ interface NavigationProps {
       avatar?: string;
     };
     role?: string;
-  };
+  } | null;
 }
 
 export default function Navigation({ user }: NavigationProps) {
@@ -32,6 +32,11 @@ export default function Navigation({ user }: NavigationProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { t } = useLanguage();
 
+  // Handle null user during prerender
+  if (!user) {
+    return null;
+  }
+
   const handleLogout = () => {
     clearToken();
     router.push('/');
@@ -39,7 +44,7 @@ export default function Navigation({ user }: NavigationProps) {
 
   const isAdmin = user.role === 'admin' || user.role === 'superadmin';
   const userId = user.id || user._id || '';
-  const userName = user.profile?.name || user.email;
+  const userName = user.profile?.name || user.email || 'User';
   const userInitial = userName.charAt(0).toUpperCase();
 
   const navLinks = [

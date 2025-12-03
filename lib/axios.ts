@@ -68,12 +68,14 @@ export const saveRefreshToken = (token: string): void => {
   localStorage.setItem('refreshToken', token);
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getUser = (): any | null => {
   if (typeof window === 'undefined') return null;
   const user = localStorage.getItem('user');
   return user ? JSON.parse(user) : null;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const saveUser = (user: any): void => {
   if (typeof window === 'undefined') return;
   localStorage.setItem('user', JSON.stringify(user));

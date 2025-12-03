@@ -7,6 +7,8 @@ import { LanguageProvider } from '@/lib/LanguageContext';
 import { useToast } from '@/context';
 import { formatDistanceToNowStrict } from 'date-fns';
 
+export const dynamic = 'force-dynamic';
+
 interface NotificationItem {
   _id: string;
   type: string;
